@@ -2,9 +2,18 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stockkarte – Bienen am Goldloch (jahresübergreifend)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#8b6f3c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Stockkarte – Bienen am Goldloch</title>
+
+    <!-- Manifest (externe Datei) -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- html2pdf.js für PDF-Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root {
             --bg: #faf8f2;
@@ -15,47 +24,57 @@
             --accent: #8b6f3c;
             --accent-light: #f0e8d5;
             --accent-strong: #5a3e1b;
-            --shadow: 0 2px 12px rgba(60, 40, 10, 0.08);
-            --radius: 10px;
+            --shadow: 0 2px 12px rgba(60, 40, 10, 0.1);
+            --radius: 12px;
+            --touch-target: 44px;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             background: var(--bg);
             font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
             color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 16px 60px;
+            padding: 12px 12px 80px;
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        /* ── Navigation oben (Jahr + Volk) ── */
+        /* ═══ Navigation ═══ */
         .top-nav {
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
-            background: #fffefb;
-            padding: 12px 20px;
-            border-radius: 40px;
+            gap: 8px 12px;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            align-items: center;
             justify-content: center;
         }
-        .top-nav label {
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-group label {
             font-weight: 700;
             color: var(--accent);
             font-size: 0.85rem;
+            white-space: nowrap;
         }
-        .top-nav select {
-            padding: 8px 32px 8px 12px;
+        select {
+            padding: 10px 32px 10px 12px;
             border-radius: 30px;
             border: 1.5px solid var(--border);
             background: #fffef9;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
@@ -63,187 +82,341 @@
             background-repeat: no-repeat;
             background-position: right 12px center;
             color: var(--text);
+            min-height: var(--touch-target);
         }
-        .top-nav button {
+        .btn {
             background: var(--accent-light);
             border: 1.5px solid var(--border);
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 30px;
             font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: 0.2s;
             color: var(--accent-strong);
+            white-space: nowrap;
+            min-height: var(--touch-target);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .top-nav button:hover { background: #e2d7bb; border-color: var(--accent); }
-        .top-nav .btn-neu { background: var(--accent); color: white; border-color: var(--accent); }
-        .top-nav .btn-neu:hover { background: #6b4f28; }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .btn-primary:active { background: #6b4f28; }
 
-        /* ── Toolbar ── */
+        /* Toolbar */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            background: #fffefb;
-            padding: 10px 18px;
-            border-radius: 30px;
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             justify-content: center;
         }
-        .toolbar button,
-        .toolbar label.btn-file {
-            font-size: 0.82rem;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1.5px solid var(--border);
-            background: #fffef9;
-            color: var(--accent);
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
-        .toolbar button:hover,
-        .toolbar label.btn-file:hover { background: var(--accent-light); border-color: var(--accent); color: #5a3e1b; }
-        .toolbar button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-        .toolbar button.primary:hover { background: #6b4f28; }
+        .toolbar .btn { font-size: 0.8rem; }
         .toolbar input[type="file"] { display: none; }
 
-        /* ── Stockkarte ── */
+        /* ═══ Stockkarte ═══ */
         .stockkarte {
             background: var(--card-bg);
             border: 2px solid var(--border);
             border-radius: var(--radius);
-            padding: 24px 20px 20px;
-            width: 100%;
-            max-width: 1300px;
+            padding: 20px 16px;
             box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
         }
         .stand-zeile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             padding-bottom: 14px;
             border-bottom: 1px dashed var(--border);
-            gap: 4px;
         }
-        .stand-titel { font-size: 1.5rem; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
-        .stand-name { font-size: 1.15rem; font-weight: 600; color: var(--accent-strong); }
-        .stand-jahr { font-size: 1.15rem; font-weight: 600; background: var(--accent-light); padding: 4px 16px; border-radius: 20px; color: var(--accent-strong); }
-        .kopf { display: flex; flex-wrap: wrap; gap: 14px 20px; margin-bottom: 18px; align-items: flex-end; }
-        .kopf-feld { display: flex; flex-direction: column; gap: 3px; min-width: 80px; flex: 1 1 120px; }
-        .kopf-feld label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--text-light); }
-        .kopf-feld input {
-            border: none; border-bottom: 2px solid var(--border); background: transparent;
-            font-size: 0.9rem; padding: 5px 3px; font-family: inherit; color: var(--text); width: 100%;
-        }
-        .kopf-feld input:focus { outline: none; border-bottom-color: var(--accent); background: #fffef9; }
-        .kopf-feld input[readonly] { background: #f7f3ea; color: #5a4a2e; font-weight: 600; border-bottom-style: solid; }
+        .stand-titel { font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
+        .stand-name { font-size: 1.1rem; font-weight: 600; color: var(--accent-strong); }
+        .stand-jahr { font-size: 1.1rem; font-weight: 600; background: var(--accent-light); padding: 4px 16px; border-radius: 20px; color: var(--accent-strong); display: inline-block; margin-top: 4px; }
 
-        .table-wrapper { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 950px; }
-        thead th {
-            background: var(--accent-light); color: var(--accent); font-weight: 700; font-size: 0.7rem;
-            text-transform: uppercase; letter-spacing: 0.6px; padding: 9px 6px; border: 1px solid #d9cba8;
-            text-align: center; white-space: nowrap;
+        .kopf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            margin-bottom: 16px;
+            align-items: flex-end;
         }
-        thead th.col-notes { text-align: left; padding-left: 10px; min-width: 160px; }
-        tbody td { border: 1px solid #e3d9c2; padding: 4px; text-align: center; vertical-align: middle; position: relative; }
-        tbody tr:hover td { background: #fdf9f0; }
+        .kopf-feld {
+            flex: 1 1 120px;
+            min-width: 100px;
+        }
+        .kopf-feld label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 2px;
+        }
+        .kopf-feld input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            background: transparent;
+            font-size: 0.95rem;
+            padding: 8px 4px;
+            font-family: inherit;
+            color: var(--text);
+            min-height: var(--touch-target);
+        }
+        .kopf-feld input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+            background: #fffef9;
+        }
+        .kopf-feld input[readonly] {
+            background: #f7f3ea;
+            color: #5a4a2e;
+            font-weight: 600;
+        }
+
+        /* Tabelle */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -4px;
+            padding-bottom: 8px;
+            touch-action: pan-x;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            min-width: 800px;
+        }
+        thead th {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 4px;
+            border: 1px solid #d9cba8;
+            text-align: center;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        thead th.col-notes { text-align: left; padding-left: 10px; }
+        tbody td {
+            border: 1px solid #e3d9c2;
+            padding: 4px 4px;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+        }
+        tbody tr:active { background: #fdf9f0; }
         tbody td input,
         tbody td select {
-            width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.78rem;
-            text-align: center; padding: 5px 2px; color: var(--text); border-radius: 4px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 6px 2px;
+            color: var(--text);
+            border-radius: 4px;
+            min-height: 32px;
         }
         tbody td input:focus,
-        tbody td select:focus { outline: 2px solid var(--accent); outline-offset: -1px; background: #fffefb; }
-        tbody td input.notes-input { text-align: left; min-width: 150px; padding-right: 28px; }
-        tbody td select {
-            cursor: pointer; appearance: none; -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3l3 4 3-4' fill='none' stroke='%238b6f3c' stroke-width='1.2'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 4px center; padding-right: 18px;
+        tbody td select:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: -1px;
+            background: #fffefb;
         }
-        .row-num { font-size: 0.7rem; color: #b5a585; min-width: 26px; }
+        .notes-input {
+            text-align: left !important;
+            padding-right: 32px !important;
+        }
         .note-expand {
-            position: absolute; right: 4px; top: 50%; transform: translateY(-50%); cursor: pointer;
-            font-size: 1rem; opacity: 0.7; background: none; border: none; color: var(--accent); z-index: 2;
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--accent);
+            z-index: 2;
+            padding: 4px;
+            min-width: 36px;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .note-expand:hover { opacity: 1; transform: translateY(-50%) scale(1.2); }
+        .row-num {
+            font-size: 0.7rem;
+            color: #b5a585;
+            min-width: 26px;
+        }
 
-        /* Modal */
+        /* Legende */
+        .legende {
+            margin-top: 16px;
+            padding: 12px;
+            background: #fdfaf3;
+            border: 1px solid #e3d9c2;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            color: var(--text-light);
+        }
+        .legende strong { font-size: 0.65rem; display: block; margin-bottom: 2px; color: var(--accent); }
+        .legende .val { font-weight: 700; width: 16px; display: inline-block; color: var(--accent); }
+
+        /* Modal (angepasst für Touch) */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-            visibility: hidden; opacity: 0; transition: 0.25s;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            padding: 16px;
         }
         .modal-overlay.active { visibility: visible; opacity: 1; }
         .modal-box {
-            background: #fffef9; border: 2px solid var(--border); border-radius: 16px; padding: 24px;
-            width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px;
+            background: #fffef9;
+            border-radius: 20px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
         }
-        .modal-box h3 { color: var(--accent); }
+        .modal-box h3 { margin-bottom: 12px; color: var(--accent); }
         .modal-box textarea {
-            width: 100%; height: 200px; border: 2px solid var(--border); border-radius: 8px;
-            padding: 12px; font-family: inherit; font-size: 0.9rem; resize: vertical; background: #fffefb;
+            width: 100%;
+            height: 180px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            background: #fffefb;
+            margin-bottom: 16px;
         }
-        .modal-box .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-        .modal-box button {
-            padding: 8px 20px; border-radius: 30px; border: 1.5px solid var(--border);
-            background: #fffef9; font-weight: 600; cursor: pointer;
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
         }
-        .modal-box button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+        .modal-actions button {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: #fffef9;
+            font-weight: 600;
+            font-size: 1rem;
+            min-height: var(--touch-target);
+        }
+        .modal-actions button.primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
 
-        .legende {
-            margin-top: 20px; padding: 14px 18px; background: #fdfaf3; border: 1px solid #e3d9c2;
-            border-radius: 8px; display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: 0.76rem; color: var(--text-light);
-        }
-        .legende strong { display: block; margin-bottom: 4px; color: var(--accent); font-size: 0.7rem; text-transform: uppercase; }
-        .legende .val { font-weight: 700; display: inline-block; width: 16px; color: var(--accent); }
-
+        /* Toast */
         .toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #3e3729; color: #faf8f2; padding: 12px 24px; border-radius: 30px; font-weight: 600;
-            z-index: 999; transition: transform 0.35s; pointer-events: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: #3e3729;
+            color: #faf8f2;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            z-index: 3000;
+            transition: 0.3s;
+            pointer-events: none;
+            font-size: 0.9rem;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
+        @media (max-width: 768px) {
+            body { padding: 8px 8px 100px; }
+            .top-nav { flex-direction: column; align-items: stretch; gap: 10px; }
+            .nav-group { justify-content: space-between; }
+            .toolbar { gap: 6px; padding: 10px; }
+            .toolbar .btn { padding: 10px 14px; font-size: 0.78rem; }
+            .stockkarte { padding: 14px 10px; }
+            .stand-titel { font-size: 1.2rem; }
+            .kopf-feld input { font-size: 0.9rem; padding: 8px 2px; }
+            table { font-size: 0.7rem; min-width: 700px; }
+            .legende { font-size: 0.65rem; }
+        }
+
+        @media (max-width: 480px) {
+            .top-nav { padding: 8px 10px; }
+            select, .btn { font-size: 0.8rem; padding: 8px 12px; }
+            .btn { padding: 8px 12px; }
+            .table-wrapper { margin: 0 -6px; }
+            .modal-box { padding: 16px; }
+        }
+
         @media print {
-            body { background: #fff; padding: 0; }
-            .toolbar, .top-nav, .toast, .btn-file, .note-expand, .modal-overlay { display: none !important; }
-            .stockkarte { box-shadow: none; border: 2px solid #000; border-radius: 0; max-width: 100%; padding: 8px 6px; }
+            body { background: white; padding: 0; }
+            .top-nav, .toolbar, .toast, .note-expand, .modal-overlay { display: none !important; }
+            .stockkarte { box-shadow: none; border: 2px solid black; border-radius: 0; padding: 8px; }
             @page { size: A4 landscape; margin: 8mm; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Obere Navigation: Jahr + Volk -->
+    <!-- Navigation -->
     <div class="top-nav">
-        <label for="jahrSelect">📅 Jahr:</label>
-        <select id="jahrSelect"></select>
-        <button id="btnNeuesJahr" class="btn-neu" title="Neues Jahr anlegen (übernimmt Völker, leere Tabelle)">＋ Neues Jahr</button>
-        <span style="width:1px; background:var(--border); align-self:stretch; margin:0 8px;"></span>
-        <label for="volkSelect">🐝 Volk:</label>
-        <select id="volkSelect"></select>
-        <button id="btnNeuesVolk" class="btn-neu">＋ Neues Volk</button>
-        <button id="btnVolkLoeschen">🗑️ Volk löschen</button>
+        <div class="nav-group">
+            <label for="jahrSelect">📅 Jahr</label>
+            <select id="jahrSelect"></select>
+            <button id="btnNeuesJahr" class="btn btn-primary">＋ Jahr</button>
+        </div>
+        <div class="nav-group">
+            <label for="volkSelect">🐝 Volk</label>
+            <select id="volkSelect"></select>
+            <button id="btnNeuesVolk" class="btn btn-primary">＋ Volk</button>
+            <button id="btnVolkLoeschen" class="btn">🗑️</button>
+        </div>
     </div>
 
     <!-- Toolbar -->
     <div class="toolbar">
-        <button onclick="window.print()">🖨️ Drucken</button>
-        <button class="primary" id="btnPDF">📄 PDF exportieren</button>
-        <button id="btnJSONexport">💾 Alle Jahre sichern (.json)</button>
-        <label class="btn-file">📂 Alle Jahre laden (.json)
+        <button onclick="window.print()" class="btn">🖨️</button>
+        <button id="btnPDF" class="btn btn-primary">📄 PDF</button>
+        <button id="btnJSONexport" class="btn">💾 Sicherung</button>
+        <label class="btn" style="cursor:pointer;">📂 Laden
             <input type="file" id="jsonImport" accept=".json">
         </label>
-        <button id="btnResetVolk">🧹 Tabelle leeren</button>
+        <button id="btnResetVolk" class="btn">🧹 Leeren</button>
     </div>
 
     <!-- Stockkarte -->
@@ -256,14 +429,14 @@
         <div class="kopf">
             <div class="kopf-feld"><label>Volk Nr.</label><input type="text" id="volkNr" readonly></div>
             <div class="kopf-feld"><label>Herkunft</label><input type="text" id="herkunft" placeholder="Ableger …"></div>
-            <div class="kopf-feld"><label>Kö (Königin)</label><input type="text" id="koenigin" placeholder="Zeichnung / Jahr"></div>
-            <div class="kopf-feld"><label>Farbe / Nr.</label><input type="text" id="farbeNr" placeholder="z. B. gelb"></div>
+            <div class="kopf-feld"><label>Kö (Königin)</label><input type="text" id="koenigin" placeholder="Zeichnung"></div>
+            <div class="kopf-feld"><label>Farbe / Nr.</label><input type="text" id="farbeNr" placeholder="z.B. gelb"></div>
         </div>
 
         <div class="table-wrapper">
             <table id="stockkarteTabelle">
                 <thead>
-                    <tr><th>Nr.</th><th>Datum</th><th>Stifte</th><th>Stärke</th><th colspan="3" style="background:#e8dcc4;">Allgemein</th><th>Termin</th><th class="col-notes">Arbeiten &amp; Notizen</th></tr>
+                    <tr><th>Nr.</th><th>Datum</th><th>Stifte</th><th>Stärke</th><th colspan="3">Allgemein</th><th>Termin</th><th class="col-notes">Arbeiten & Notizen</th></tr>
                     <tr><th></th><th></th><th></th><th></th><th>Sanftmut</th><th>Wabensitz</th><th>Schw.stimm.</th><th></th><th class="col-notes"></th></tr>
                 </thead>
                 <tbody id="tabellenBody"></tbody>
@@ -272,16 +445,16 @@
 
         <div class="legende">
             <div><strong>Sanftmut</strong> <span class="val">4</span> sehr sanft <span class="val">3</span> sanft <span class="val">2</span> sticht <span class="val">1</span> sehr böse</div>
-            <div><strong>Wabensitz</strong> <span class="val">4</span> sehr ruhig <span class="val">3</span> ruhig <span class="val">2</span> läuft <span class="val">1</span> läuft stark</div>
-            <div><strong>Schwarmstimmung</strong> <span class="val">4</span> keine <span class="val">3</span> bestiftete WZ <span class="val">2</span> Eingriff <span class="val">1</span> geschwärmt</div>
+            <div><strong>Wabensitz</strong> <span class="val">4</span> sehr ruhig <span class="val">3</span> ruhig <span class="val">2</span> läuft <span class="val">1</span> stark</div>
+            <div><strong>Schwarmstimmung</strong> <span class="val">4</span> keine <span class="val">3</span> WZ <span class="val">2</span> Eingriff <span class="val">1</span> geschwärmt</div>
         </div>
     </div>
 
-    <!-- Modal für lange Notizen -->
+    <!-- Modal -->
     <div class="modal-overlay" id="noteModal">
         <div class="modal-box">
             <h3>📝 Notiz bearbeiten</h3>
-            <textarea id="modalTextarea" placeholder="Notiz …"></textarea>
+            <textarea id="modalTextarea"></textarea>
             <div class="modal-actions">
                 <button id="modalCancel">Abbrechen</button>
                 <button id="modalSave" class="primary">Übernehmen</button>
@@ -292,6 +465,16 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // ─── Service Worker Registrierung ───
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registriert', reg.scope))
+                    .catch(err => console.log('Service Worker Fehler', err));
+            });
+        }
+
+        // ─── App-Logik ───
         (() => {
             const TABELLEN_ZEILEN = 35;
             const STORAGE_KEY = 'stockkarte_bienen_goldloch_jahre';
@@ -313,8 +496,7 @@
             const modalSave = document.getElementById('modalSave');
             let currentTargetInput = null;
 
-            // Zustand
-            let alleDaten = { jahre: {} };   // { jahre: { "2025": { völker: {...} }, ... } }
+            let alleDaten = { jahre: {} };
             let aktuellesJahr = DEFAULT_JAHR;
             let aktuellesVolkId = null;
 
@@ -326,49 +508,36 @@
             }
 
             function leeresVolk(id) {
-                return {
-                    kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' },
-                    zeilen: []
-                };
+                return { kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' }, zeilen: [] };
             }
 
             function getJahresDaten(jahr) {
-                if (!alleDaten.jahre[jahr]) {
-                    alleDaten.jahre[jahr] = { völker: {} };
-                }
+                if (!alleDaten.jahre[jahr]) alleDaten.jahre[jahr] = { völker: {} };
                 return alleDaten.jahre[jahr];
             }
 
-            // Tabelle aufbauen
             function baueTabellenGerüst() {
                 tbody.innerHTML = '';
                 for (let i = 1; i <= TABELLEN_ZEILEN; i++) {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td class="row-num">${i}</td>
-                        <td><input type="text" class="datum" placeholder="TT.MM." data-feld="datum" data-zeile="${i}"></td>
-                        <td><input type="text" class="stifte" placeholder="z.B. ++" data-feld="stifte" data-zeile="${i}"></td>
-                        <td><input type="text" class="staerke" placeholder="1-10" data-feld="staerke" data-zeile="${i}"></td>
-                        <td><select class="sanftmut" data-feld="sanftmut" data-zeile="${i}">
-                            <option value="">–</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option>
-                        </select></td>
-                        <td><select class="wabensitz" data-feld="wabensitz" data-zeile="${i}">
-                            <option value="">–</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option>
-                        </select></td>
-                        <td><select class="schwarmstimmung" data-feld="schwarmstimmung" data-zeile="${i}">
-                            <option value="">–</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option>
-                        </select></td>
-                        <td><input type="text" class="termin" placeholder="TT.MM." data-feld="termin" data-zeile="${i}"></td>
+                        <td><input type="text" data-feld="datum" data-zeile="${i}" placeholder="TT.MM."></td>
+                        <td><input type="text" data-feld="stifte" data-zeile="${i}" placeholder="++"></td>
+                        <td><input type="text" data-feld="staerke" data-zeile="${i}" placeholder="1-10"></td>
+                        <td><select data-feld="sanftmut" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
+                        <td><select data-feld="wabensitz" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
+                        <td><select data-feld="schwarmstimmung" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
+                        <td><input type="text" data-feld="termin" data-zeile="${i}" placeholder="TT.MM."></td>
                         <td style="position:relative;">
-                            <input type="text" class="notizen notes-input" placeholder="Freitext…" data-feld="notizen" data-zeile="${i}">
-                            <span class="note-expand" title="Volltext anzeigen">🔎</span>
+                            <input type="text" class="notes-input" data-feld="notizen" data-zeile="${i}" placeholder="Notiz">
+                            <span class="note-expand">🔎</span>
                         </td>
                     `;
                     tbody.appendChild(tr);
                 }
             }
 
-            // Aktuelles Volk + Jahr aus Formular lesen und speichern
             function speichereAktuellesVolk() {
                 if (!aktuellesVolkId || !aktuellesJahr) return;
                 const jDaten = getJahresDaten(aktuellesJahr);
@@ -379,17 +548,15 @@
                     farbeNr: farbeNrInput.value.trim()
                 };
                 const zeilen = [];
-                const rows = tbody.querySelectorAll('tr');
-                rows.forEach(row => {
+                tbody.querySelectorAll('tr').forEach(row => {
                     const z = {};
-                    const inputs = row.querySelectorAll('input, select');
                     let hatInhalt = false;
-                    inputs.forEach(el => {
+                    row.querySelectorAll('input, select').forEach(el => {
                         const feld = el.dataset.feld;
                         if (feld) {
                             const val = el.value.trim();
                             z[feld] = val;
-                            if (val !== '') hatInhalt = true;
+                            if (val) hatInhalt = true;
                         }
                     });
                     if (hatInhalt) {
@@ -400,7 +567,6 @@
                 jDaten.völker[aktuellesVolkId] = { kopf, zeilen };
             }
 
-            // Formular mit Daten für aktuelles Jahr + Volk füllen
             function ladeVolkInFormular(volkId) {
                 const jDaten = getJahresDaten(aktuellesJahr);
                 const volk = jDaten.völker[volkId] || leeresVolk(volkId);
@@ -409,73 +575,55 @@
                 koeniginInput.value = volk.kopf.koenigin || '';
                 farbeNrInput.value = volk.kopf.farbeNr || '';
 
-                const allInputs = tbody.querySelectorAll('input');
-                const allSelects = tbody.querySelectorAll('select');
-                allInputs.forEach(el => el.value = '');
-                allSelects.forEach(el => el.value = '');
+                tbody.querySelectorAll('input, select').forEach(el => el.value = '');
 
-                if (volk.zeilen && Array.isArray(volk.zeilen)) {
-                    const zeilenMap = {};
-                    volk.zeilen.forEach(z => { if (z.zeilenNr) zeilenMap[z.zeilenNr] = z; });
-                    const rows = tbody.querySelectorAll('tr');
-                    rows.forEach(row => {
+                if (volk.zeilen) {
+                    const map = {};
+                    volk.zeilen.forEach(z => { if (z.zeilenNr) map[z.zeilenNr] = z; });
+                    tbody.querySelectorAll('tr').forEach(row => {
                         const nr = row.querySelector('.row-num')?.textContent || '';
-                        const zData = zeilenMap[nr];
-                        if (zData) {
-                            const inputs = row.querySelectorAll('input, select');
-                            inputs.forEach(el => {
+                        const z = map[nr];
+                        if (z) {
+                            row.querySelectorAll('input, select').forEach(el => {
                                 const feld = el.dataset.feld;
-                                if (feld && zData[feld] !== undefined) el.value = zData[feld];
+                                if (feld && z[feld] !== undefined) el.value = z[feld];
                             });
                         }
                     });
                 }
             }
 
-            // Jahr-Dropdown aktualisieren
             function updateJahrSelect() {
                 const jahre = Object.keys(alleDaten.jahre).sort();
-                jahrSelect.innerHTML = '';
                 if (jahre.length === 0) {
-                    alleDaten.jahre[DEFAULT_JAHR] = { völker: {} };
+                    alleDaten.jahre[DEFAULT_JAHR] = { völker: { '1': leeresVolk('1') } };
                     jahre.push(DEFAULT_JAHR);
                 }
+                jahrSelect.innerHTML = '';
                 jahre.forEach(j => {
-                    const opt = document.createElement('option');
-                    opt.value = j;
-                    opt.textContent = j;
-                    jahrSelect.appendChild(opt);
+                    const o = new Option(j, j);
+                    jahrSelect.appendChild(o);
                 });
                 if (!alleDaten.jahre[aktuellesJahr]) aktuellesJahr = jahre[0];
                 jahrSelect.value = aktuellesJahr;
                 jahrAnzeige.textContent = aktuellesJahr;
             }
 
-            // Volk-Dropdown für aktuelles Jahr
             function updateVolkSelect() {
                 const jDaten = getJahresDaten(aktuellesJahr);
                 const ids = Object.keys(jDaten.völker).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
-                volkSelect.innerHTML = '';
                 if (ids.length === 0) {
                     jDaten.völker['1'] = leeresVolk('1');
                     ids.push('1');
                 }
-                ids.forEach(id => {
-                    const opt = document.createElement('option');
-                    opt.value = id;
-                    opt.textContent = `Volk ${id}`;
-                    volkSelect.appendChild(opt);
-                });
-                if (!aktuellesVolkId || !jDaten.völker[aktuellesVolkId]) {
-                    aktuellesVolkId = ids[0];
-                }
+                volkSelect.innerHTML = '';
+                ids.forEach(id => volkSelect.appendChild(new Option(`Volk ${id}`, id)));
+                if (!aktuellesVolkId || !jDaten.völker[aktuellesVolkId]) aktuellesVolkId = ids[0];
                 volkSelect.value = aktuellesVolkId;
             }
 
-            // Jahr wechseln
             function wechsleJahr(neuesJahr) {
                 if (!neuesJahr || neuesJahr === aktuellesJahr) return;
-                // Aktuelles speichern
                 speichereAktuellesVolk();
                 aktuellesJahr = neuesJahr;
                 updateVolkSelect();
@@ -485,38 +633,26 @@
                 autoSpeichern();
             }
 
-            // Jahr neu anlegen (Völker-Struktur kopieren, Tabelle leer)
             function neuesJahr() {
-                const jahrInput = prompt('Neues Jahr eingeben (z. B. 2027):', '');
-                if (!jahrInput) return;
-                const jahr = jahrInput.trim();
-                if (!jahr || alleDaten.jahre[jahr]) {
-                    toast('⚠️ Jahr existiert bereits oder ungültig.');
-                    return;
-                }
-                // Aktuelle Daten speichern
+                const jahr = prompt('Neues Jahr (z.B. 2027):', '');
+                if (!jahr || alleDaten.jahre[jahr]) { toast('Ungültig oder bereits vorhanden.'); return; }
                 speichereAktuellesVolk();
-                // Jahr anlegen mit leeren Völkern (nur IDs übernehmen)
-                const jDatenAlt = getJahresDaten(aktuellesJahr);
+                const jAlt = getJahresDaten(aktuellesJahr);
                 alleDaten.jahre[jahr] = { völker: {} };
-                const neueVölker = alleDaten.jahre[jahr].völker;
-                Object.keys(jDatenAlt.völker).forEach(id => {
-                    const altesVolk = jDatenAlt.völker[id];
-                    neueVölker[id] = {
-                        kopf: { ...altesVolk.kopf, volkNr: id },   // Kopf übernehmen
-                        zeilen: []                                // Tabelle leer
+                Object.keys(jAlt.völker).forEach(id => {
+                    alleDaten.jahre[jahr].völker[id] = {
+                        kopf: { ...jAlt.völker[id].kopf, volkNr: id },
+                        zeilen: []
                     };
                 });
-                // Sicherstellen, dass mindestens Volk 1 existiert
-                if (Object.keys(neueVölker).length === 0) {
-                    neueVölker['1'] = leeresVolk('1');
+                if (Object.keys(alleDaten.jahre[jahr].völker).length === 0) {
+                    alleDaten.jahre[jahr].völker['1'] = leeresVolk('1');
                 }
                 updateJahrSelect();
                 wechsleJahr(jahr);
-                toast(`✅ Jahr ${jahr} angelegt (Völker übernommen, Tabelle leer).`);
+                toast(`✅ Jahr ${jahr} angelegt`);
             }
 
-            // Volk wechseln
             function wechsleVolk(neueId) {
                 if (!neueId || !getJahresDaten(aktuellesJahr).völker[neueId]) return;
                 speichereAktuellesVolk();
@@ -527,39 +663,28 @@
             }
 
             function neuesVolk() {
-                const idVorschlag = prompt('Volk-Nummer oder Bezeichnung:', '');
-                if (!idVorschlag) return;
-                const id = idVorschlag.trim();
+                const id = prompt('Volk-Nummer:', '');
                 if (!id) return;
                 const jDaten = getJahresDaten(aktuellesJahr);
-                if (jDaten.völker[id]) {
-                    toast('⚠️ Volk existiert in diesem Jahr bereits!');
-                    return;
-                }
+                if (jDaten.völker[id]) { toast('Volk existiert schon.'); return; }
                 speichereAktuellesVolk();
                 jDaten.völker[id] = leeresVolk(id);
                 updateVolkSelect();
                 wechsleVolk(id);
-                toast(`✅ Volk „${id}“ für ${aktuellesJahr} angelegt.`);
+                toast(`✅ Volk ${id} erstellt`);
             }
 
             function loescheVolk() {
-                if (!aktuellesVolkId) return;
                 const jDaten = getJahresDaten(aktuellesJahr);
-                if (Object.keys(jDaten.völker).length <= 1) {
-                    toast('⚠️ Mindestens ein Volk muss bleiben.');
-                    return;
-                }
-                if (!confirm(`Volk „${aktuellesVolkId}“ aus dem Jahr ${aktuellesJahr} löschen?`)) return;
+                if (Object.keys(jDaten.völker).length <= 1) { toast('Mindestens ein Volk nötig.'); return; }
+                if (!confirm(`Volk ${aktuellesVolkId} aus ${aktuellesJahr} löschen?`)) return;
                 delete jDaten.völker[aktuellesVolkId];
                 updateVolkSelect();
                 aktuellesVolkId = Object.keys(jDaten.völker)[0];
                 ladeVolkInFormular(aktuellesVolkId);
                 autoSpeichern();
-                toast('🗑️ Volk gelöscht.');
             }
 
-            // ── Persistenz ──
             function autoSpeichern() {
                 speichereAktuellesVolk();
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(alleDaten)); } catch (e) {}
@@ -570,13 +695,8 @@
                     const raw = localStorage.getItem(STORAGE_KEY);
                     if (raw) {
                         const parsed = JSON.parse(raw);
-                        // Migration von alter Struktur (ohne jahre)
-                        if (parsed.jahre) {
-                            alleDaten = parsed;
-                        } else if (parsed.völker) {
-                            // Alte Daten in aktuelles Jahr migrieren
-                            alleDaten = { jahre: { [DEFAULT_JAHR]: { völker: parsed.völker } } };
-                        }
+                        if (parsed.jahre) alleDaten = parsed;
+                        else if (parsed.völker) alleDaten = { jahre: { [DEFAULT_JAHR]: { völker: parsed.völker } } };
                     }
                 } catch (e) {}
                 if (!alleDaten.jahre || Object.keys(alleDaten.jahre).length === 0) {
@@ -588,16 +708,14 @@
                 ladeVolkInFormular(aktuellesVolkId);
             }
 
-            // ── JSON Export / Import (alle Jahre) ──
             function exportiereJSON() {
                 speichereAktuellesVolk();
-                const jsonStr = JSON.stringify(alleDaten, null, 2);
-                const blob = new Blob([jsonStr], {type: 'application/json'});
+                const blob = new Blob([JSON.stringify(alleDaten, null, 2)], {type: 'application/json'});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
                 a.download = `Stockkarte_alle_Jahre_${new Date().toISOString().slice(0,10)}.json`;
                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                toast('💾 Alle Jahre exportiert.');
+                toast('💾 Alle Jahre exportiert');
             }
 
             function importiereJSON(event) {
@@ -607,17 +725,15 @@
                 reader.onload = e => {
                     try {
                         const daten = JSON.parse(e.target.result);
-                        if (!daten.jahre) throw new Error('Keine Jahresdaten');
+                        if (!daten.jahre) throw new Error('Ungültig');
                         alleDaten = daten;
                         updateJahrSelect();
                         aktuellesJahr = jahrSelect.value;
                         updateVolkSelect();
                         ladeVolkInFormular(aktuellesVolkId);
                         autoSpeichern();
-                        toast('📥 Alle Jahre geladen.');
-                    } catch (err) {
-                        toast('❌ Ungültige Datei.');
-                    }
+                        toast('📥 Daten geladen');
+                    } catch { toast('❌ Fehler'); }
                 };
                 reader.readAsText(file);
                 event.target.value = '';
@@ -625,8 +741,7 @@
 
             function exportierePDF() {
                 speichereAktuellesVolk();
-                const karte = document.getElementById('stockkarte');
-                toast('📄 PDF wird erstellt…', 3000);
+                toast('📄 PDF wird erstellt…', 2000);
                 html2pdf().set({
                     margin: [6,4,6,4],
                     filename: `Stockkarte_${aktuellesJahr}_Volk_${aktuellesVolkId}.pdf`,
@@ -634,21 +749,19 @@
                     html2canvas: { scale: 2, backgroundColor: '#fffef9' },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
                     pagebreak: { mode: ['avoid-all', 'css'] }
-                }).from(karte).save().then(() => toast('✅ PDF exportiert.'));
+                }).from(document.getElementById('stockkarte')).save();
             }
 
             function resetTabelle() {
-                if (!confirm('Tabelle des aktuellen Volks leeren?')) return;
+                if (!confirm('Tabelle dieses Volks leeren?')) return;
                 const jDaten = getJahresDaten(aktuellesJahr);
                 if (jDaten.völker[aktuellesVolkId]) {
                     jDaten.völker[aktuellesVolkId].zeilen = [];
                     ladeVolkInFormular(aktuellesVolkId);
                     autoSpeichern();
-                    toast('🧹 Tabelle geleert.');
                 }
             }
 
-            // Modal
             function openModal(input) {
                 currentTargetInput = input;
                 modalTextarea.value = input.value;
@@ -682,7 +795,10 @@
             tbody.addEventListener('click', e => {
                 if (e.target.classList.contains('note-expand')) {
                     const td = e.target.closest('td');
-                    if (td) { const inp = td.querySelector('input.notes-input'); if (inp) openModal(inp); }
+                    if (td) {
+                        const inp = td.querySelector('input.notes-input');
+                        if (inp) openModal(inp);
+                    }
                 }
             });
             modalCancel.addEventListener('click', () => closeModal(false));
