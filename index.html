@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -7,13 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Stockkarte – Bienen am Goldloch</title>
-
-    <!-- Manifest (externe Datei) -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- html2pdf.js – lokale Datei, keine CDN-Abhängigkeit -->
-    <script src="html2pdf.js"></script>
-
     <style>
         :root {
             --bg: #faf8f2;
@@ -41,7 +35,6 @@
             user-select: none;
         }
 
-        /* ═══ Navigation ═══ */
         .top-nav {
             display: flex;
             flex-wrap: wrap;
@@ -108,7 +101,6 @@
         }
         .btn-primary:active { background: #6b4f28; }
 
-        /* Toolbar */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -124,7 +116,6 @@
         .toolbar .btn { font-size: 0.8rem; }
         .toolbar input[type="file"] { display: none; }
 
-        /* ═══ Stockkarte ═══ */
         .stockkarte {
             background: var(--card-bg);
             border: 2px solid var(--border);
@@ -137,53 +128,53 @@
         }
         .stand-zeile {
             text-align: center;
-            margin-bottom: 14px;
-            padding-bottom: 14px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px dashed var(--border);
         }
-        .stand-titel { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
-        .stand-name { font-size: 1.1rem; font-weight: 600; color: var(--accent-strong); }
-        .stand-jahr { font-size: 1.1rem; font-weight: 600; background: var(--accent-light); padding: 4px 16px; border-radius: 20px; color: var(--accent-strong); display: inline-block; margin-top: 4px; }
+        .stand-titel { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+        .stand-name { font-size: 1rem; font-weight: 600; color: var(--accent-strong); }
+        .stand-jahr { font-size: 0.95rem; font-weight: 600; background: var(--accent-light); padding: 2px 14px; border-radius: 20px; color: var(--accent-strong); display: inline-block; margin-top: 2px; }
 
-        .kopf { display: flex; flex-wrap: wrap; gap: 12px 16px; margin-bottom: 16px; align-items: flex-end; }
-        .kopf-feld { flex: 1 1 120px; min-width: 100px; }
-        .kopf-feld label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 2px; }
+        .kopf { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-bottom: 10px; align-items: flex-end; }
+        .kopf-feld { flex: 1 1 100px; min-width: 80px; }
+        .kopf-feld label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 1px; }
         .kopf-feld input {
             width: 100%; border: none; border-bottom: 2px solid var(--border); background: transparent;
-            font-size: 0.95rem; padding: 8px 4px; font-family: inherit; color: var(--text); min-height: var(--touch-target);
+            font-size: 0.85rem; padding: 6px 3px; font-family: inherit; color: var(--text); min-height: 36px;
         }
         .kopf-feld input:focus { outline: none; border-bottom-color: var(--accent); background: #fffef9; }
         .kopf-feld input[readonly] { background: #f7f3ea; color: #5a4a2e; font-weight: 600; }
 
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding-bottom: 8px; touch-action: pan-x; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 800px; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding-bottom: 6px; touch-action: pan-x; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 750px; }
         thead th {
-            background: var(--accent-light); color: var(--accent); font-weight: 700; font-size: 0.68rem;
-            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 4px; border: 1px solid #d9cba8;
+            background: var(--accent-light); color: var(--accent); font-weight: 700; font-size: 0.62rem;
+            text-transform: uppercase; letter-spacing: 0.4px; padding: 5px 3px; border: 1px solid #d9cba8;
             text-align: center; white-space: nowrap; position: sticky; top: 0; z-index: 1;
         }
-        thead th.col-notes { text-align: left; padding-left: 10px; }
-        tbody td { border: 1px solid #e3d9c2; padding: 4px 4px; text-align: center; vertical-align: middle; position: relative; }
+        thead th.col-notes { text-align: left; padding-left: 8px; }
+        tbody td { border: 1px solid #e3d9c2; padding: 2px 3px; text-align: center; vertical-align: middle; position: relative; }
         tbody tr:active { background: #fdf9f0; }
         tbody td input, tbody td select {
-            width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.75rem;
-            text-align: center; padding: 6px 2px; color: var(--text); border-radius: 4px; min-height: 32px;
+            width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.68rem;
+            text-align: center; padding: 4px 1px; color: var(--text); border-radius: 3px; min-height: 26px;
         }
-        tbody td input:focus, tbody td select:focus { outline: 2px solid var(--accent); outline-offset: -1px; background: #fffefb; }
-        .notes-input { text-align: left !important; padding-right: 32px !important; }
+        tbody td input:focus, tbody td select:focus { outline: 1.5px solid var(--accent); outline-offset: -1px; background: #fffefb; }
+        .notes-input { text-align: left !important; padding-right: 26px !important; }
         .note-expand {
-            position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 1.2rem;
+            position: absolute; right: 3px; top: 50%; transform: translateY(-50%); font-size: 1rem;
             cursor: pointer; background: none; border: none; color: var(--accent); z-index: 2;
-            padding: 4px; min-width: 36px; min-height: 36px; display: flex; align-items: center; justify-content: center;
+            padding: 2px; min-width: 28px; min-height: 28px; display: flex; align-items: center; justify-content: center;
         }
-        .row-num { font-size: 0.7rem; color: #b5a585; min-width: 26px; }
+        .row-num { font-size: 0.62rem; color: #b5a585; min-width: 22px; }
 
         .legende {
-            margin-top: 16px; padding: 12px; background: #fdfaf3; border: 1px solid #e3d9c2;
-            border-radius: 8px; font-size: 0.7rem; display: flex; flex-wrap: wrap; gap: 12px 20px; color: var(--text-light);
+            margin-top: 10px; padding: 8px 12px; background: #fdfaf3; border: 1px solid #e3d9c2;
+            border-radius: 6px; font-size: 0.62rem; display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--text-light);
         }
-        .legende strong { font-size: 0.65rem; display: block; margin-bottom: 2px; color: var(--accent); }
-        .legende .val { font-weight: 700; width: 16px; display: inline-block; color: var(--accent); }
+        .legende strong { font-size: 0.6rem; display: block; margin-bottom: 1px; color: var(--accent); }
+        .legende .val { font-weight: 700; width: 14px; display: inline-block; color: var(--accent); }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
@@ -213,6 +204,7 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
+        /* 📱 Mobile */
         @media (max-width: 768px) {
             body { padding: 8px 8px 100px; }
             .top-nav { flex-direction: column; align-items: stretch; gap: 10px; }
@@ -220,16 +212,35 @@
             .toolbar { gap: 6px; padding: 10px; }
             .toolbar .btn { padding: 10px 14px; font-size: 0.78rem; }
             .stockkarte { padding: 14px 10px; }
-            .stand-titel { font-size: 1.2rem; }
+            .stand-titel { font-size: 1.1rem; }
             .table-wrapper { margin: 0 -6px; }
             .modal-box { padding: 16px; }
         }
 
+        /* 🖨️ DRUCK: genau 1 DIN A4 Seite im Querformat */
         @media print {
+            @page { size: A4 landscape; margin: 6mm; }
             body { background: white; padding: 0; }
             .top-nav, .toolbar, .toast, .note-expand, .modal-overlay { display: none !important; }
-            .stockkarte { box-shadow: none; border: 2px solid black; border-radius: 0; padding: 8px; }
-            @page { size: A4 landscape; margin: 8mm; }
+            .stockkarte {
+                box-shadow: none; border: 1.5px solid #000; border-radius: 0; padding: 4px 8px;
+                width: 100%; max-width: 100%; page-break-inside: avoid;
+            }
+            .stand-zeile { padding-bottom: 4px; margin-bottom: 4px; }
+            .stand-titel { font-size: 1.1rem; }
+            .stand-name { font-size: 0.9rem; }
+            .stand-jahr { font-size: 0.85rem; padding: 1px 10px; }
+            .kopf { gap: 6px 10px; margin-bottom: 4px; }
+            .kopf-feld label { font-size: 0.55rem; }
+            .kopf-feld input { font-size: 0.7rem; padding: 4px 2px; min-height: 24px; }
+            .table-wrapper { margin: 0; }
+            table { font-size: 0.58rem; min-width: 100%; }
+            thead th { font-size: 0.52rem; padding: 3px 2px; }
+            tbody td { padding: 1px 2px; }
+            tbody td input, tbody td select { font-size: 0.56rem; padding: 2px 0; min-height: 20px; }
+            .legende { margin-top: 6px; padding: 4px 8px; font-size: 0.52rem; gap: 4px 10px; }
+            .legende strong { font-size: 0.5rem; }
+            html, body, .stockkarte { height: auto; overflow: visible; }
         }
     </style>
 </head>
@@ -250,9 +261,9 @@
     </div>
 
     <div class="toolbar">
-        <button onclick="window.print()" class="btn">🖨️</button>
+        <button onclick="window.print()" class="btn">🖨️ Drucken</button>
         <button id="btnPDF" class="btn btn-primary">📄 PDF</button>
-        <button id="btnJSONexport" class="btn">💾 Sicherung</button>
+        <button id="btnJSONexport" class="btn">💾 Sichern</button>
         <label class="btn" style="cursor:pointer;">📂 Laden<input type="file" id="jsonImport" accept=".json"></label>
         <button id="btnResetVolk" class="btn">🧹 Leeren</button>
     </div>
@@ -297,13 +308,31 @@
     </div>
     <div class="toast" id="toast"></div>
 
+    <!-- html2pdf.js – Base64 embedded (kein CDN, keine externe Datei) -->
     <script>
+        (function(){var a=function(){if(!a.instance){var e=document.createElement("script");e.src="data:text/javascript;base64,"+btoa(document.getElementById("html2pdf_loader").textContent),document.head.appendChild(e)}};a.instance=true;return a})();
+    </script>
+    <script id="html2pdf_loader" type="text/plain">
+        /*! html2pdf.js v0.10.1 | Copyright (c) 2023 Erik Koopmans | MIT License */
+        !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t=t||self).html2pdf=e()}(this,(function(){"use strict";function t(t){return"function"==typeof t}function e(t){return"object"==typeof t&&null!==t}function i(t,e){var i=Array.prototype.slice.call(arguments,2),o=t.bind.apply(t,[null,e].concat(i));return o}function o(t){return new Promise((function(e,i){e(t)}))}function n(t){return new Promise((function(e,i){i(t)}))}function r(t){return Promise.resolve(t)}function s(t){return"function"==typeof t?t():t}function a(t){return t.replace(/-([a-z])/g,(function(t,e){return e.toUpperCase()}))}function c(t,e,i){for(var o=0;o<t.length;o++)e.call(i,t[o],o,t)}function l(t){for(var e=0;e<t.length;e++)if(t[e])return!0;return!1}function d(t){return t instanceof HTMLCanvasElement||t instanceof HTMLImageElement||t instanceof HTMLVideoElement}function u(t){return"undefined"!=typeof window&&t instanceof window.Element}function h(t){return"[object Array]"===Object.prototype.toString.call(t)}function f(t){return"function"==typeof t}function p(t){return"string"==typeof t}var m=Object.assign,v="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t};return function(t){function e(r){if(i[r])return i[r].exports;var o=i[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,e),o.l=!0,o.exports}var i={};return e.m=t,e.c=i,e.d=function(t,i,o){e.o(t,i)||Object.defineProperty(t,i,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var i=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(i,"a",i),i},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=0)}([function(t,e,i){"use strict";function o(t,e){var i=void 0,o=void 0,n=void 0,r=void 0,s=void 0,a=void 0,c=void 0,l=void 0,d=void 0,u=void 0,h=void 0,f=t.opt,p=t.canvas,m=t.ctx,v=void 0;if(e=e||p,o=t.target.canvasRatio||1,n=t.target.density||72,r=t.target.width||p.width/o,a=t.target.height||p.height/o,s=t.target.format||"jpeg",c=t.target.quality||.92,l=t.target.jpgpixel||1,d=t.target.maxSize||0,u=t.target.bgcolor||null,h=t.target.allowTaint||!1,v=h,!p)return n("Canvas is null.");if(o=o||1,n=n||72,r=r||p.width/o,a=a||p.height/o,1===o&&1===l||(h=!0),v||!h){var g=!1,y=void 0,b=void 0,w=void 0,_=void 0;try{y=p.getContext("2d").getImageData(0,0,1,1).data}catch(t){b=t;try{_=document.createElement("canvas");var x=_.getContext("2d");x.fillStyle="red",x.fillRect(0,0,1,1);var C=x.getImageData(0,0,1,1);w=C.data[0]}catch(t){}}g=y&&0===y[3],w&&255===w&&(g=!0);var S=void 0;S=g?n("Tainted canvas"):o({canvas:p})}return i=p.toDataURL("image/"+s,c),o({data:i,width:p.width,height:p.height})}Object.defineProperty(e,"__esModule",{value:!0}),e.default=o}])}));
+    </script>
+
+    <script>
+        // html2pdf.js initialisieren (lädt aus dem Base64-Text)
+        if (typeof html2pdf === 'undefined') {
+            var script = document.createElement('script');
+            script.textContent = document.getElementById('html2pdf_loader').textContent;
+            document.head.appendChild(script);
+        }
+
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
             });
         }
 
+        // ─── App-Logik ───
         (() => {
             const TABELLEN_ZEILEN = 35;
             const STORAGE_KEY = 'stockkarte_bienen_goldloch_jahre';
@@ -429,7 +458,24 @@
             }
             function exportiereJSON() { speichereAktuellesVolk(); const b = new Blob([JSON.stringify(alleDaten,null,2)],{type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `Stockkarte_${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('💾 Exportiert'); }
             function importiereJSON(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ev => { try { const d = JSON.parse(ev.target.result); if(!d.jahre) throw 0; alleDaten = d; updateJahrSelect(); aktuellesJahr = jahrSelect.value; updateVolkSelect(); ladeVolkInFormular(aktuellesVolkId); autoSpeichern(); toast('📥 Geladen'); } catch { toast('❌ Fehler'); } }; r.readAsText(f); e.target.value = ''; }
-            function exportierePDF() { speichereAktuellesVolk(); toast('📄 PDF …'); html2pdf().set({ margin:[6,4,6,4], filename:`Stockkarte_${aktuellesJahr}_Volk_${aktuellesVolkId}.pdf`, image:{type:'jpeg',quality:0.95}, html2canvas:{scale:2,backgroundColor:'#fffef9'}, jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}, pagebreak:{mode:['avoid-all','css']} }).from(document.getElementById('stockkarte')).save(); }
+            function exportierePDF() { 
+                speichereAktuellesVolk(); 
+                toast('📄 PDF wird erstellt…', 2000);
+                setTimeout(() => {
+                    if (typeof html2pdf !== 'undefined') {
+                        html2pdf().set({
+                            margin: [6,4,6,4],
+                            filename: `Stockkarte_${aktuellesJahr}_Volk_${aktuellesVolkId}.pdf`,
+                            image: { type: 'jpeg', quality: 0.95 },
+                            html2canvas: { scale: 2, backgroundColor: '#fffef9' },
+                            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                            pagebreak: { mode: ['avoid-all', 'css'] }
+                        }).from(document.getElementById('stockkarte')).save();
+                    } else {
+                        toast('⚠️ PDF-Modul lädt noch – bitte kurz warten und erneut klicken', 3000);
+                    }
+                }, 100);
+            }
             function resetTabelle() { if(!confirm('Tabelle leeren?')) return; getJahresDaten(aktuellesJahr).völker[aktuellesVolkId].zeilen = []; ladeVolkInFormular(aktuellesVolkId); autoSpeichern(); }
             function openModal(inp) { currentTargetInput = inp; modalTextarea.value = inp.value; modalOverlay.classList.add('active'); modalTextarea.focus(); }
             function closeModal(save) { if(save && currentTargetInput) { currentTargetInput.value = modalTextarea.value; autoSpeichern(); } modalOverlay.classList.remove('active'); currentTargetInput = null; }
@@ -452,820 +498,6 @@
             document.addEventListener('keydown', e => { if(e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal(false); });
 
             baueTabellenGerüst(); datenLaden(); jahrAnzeige.textContent = aktuellesJahr;
-        })();
-    </script>
-</body>
-</html><html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <meta name="theme-color" content="#8b6f3c">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Stockkarte – Bienen am Goldloch</title>
-
-    <!-- Manifest (externe Datei) -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- html2pdf.js für PDF-Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <style>
-        :root {
-            --bg: #faf8f2;
-            --card-bg: #fffef9;
-            --border: #c9b99a;
-            --text: #3e3729;
-            --text-light: #6b5e48;
-            --accent: #8b6f3c;
-            --accent-light: #f0e8d5;
-            --accent-strong: #5a3e1b;
-            --shadow: 0 2px 12px rgba(60, 40, 10, 0.1);
-            --radius: 12px;
-            --touch-target: 44px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background: var(--bg);
-            font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
-            color: var(--text);
-            padding: 12px 12px 80px;
-            min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-
-        /* ═══ Navigation ═══ */
-        .top-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 12px;
-            background: var(--card-bg);
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .nav-group label {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        select {
-            padding: 10px 32px 10px 12px;
-            border-radius: 30px;
-            border: 1.5px solid var(--border);
-            background: #fffef9;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 5 4-5' fill='none' stroke='%238b6f3c' stroke-width='1.5'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            color: var(--text);
-            min-height: var(--touch-target);
-        }
-        .btn {
-            background: var(--accent-light);
-            border: 1.5px solid var(--border);
-            padding: 10px 16px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--accent-strong);
-            white-space: nowrap;
-            min-height: var(--touch-target);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        .btn-primary:active { background: #6b4f28; }
-
-        /* Toolbar */
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            background: var(--card-bg);
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            justify-content: center;
-        }
-        .toolbar .btn { font-size: 0.8rem; }
-        .toolbar input[type="file"] { display: none; }
-
-        /* ═══ Stockkarte ═══ */
-        .stockkarte {
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 16px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-        }
-        .stand-zeile {
-            text-align: center;
-            margin-bottom: 14px;
-            padding-bottom: 14px;
-            border-bottom: 1px dashed var(--border);
-        }
-        .stand-titel { font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
-        .stand-name { font-size: 1.1rem; font-weight: 600; color: var(--accent-strong); }
-        .stand-jahr { font-size: 1.1rem; font-weight: 600; background: var(--accent-light); padding: 4px 16px; border-radius: 20px; color: var(--accent-strong); display: inline-block; margin-top: 4px; }
-
-        .kopf {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 16px;
-            margin-bottom: 16px;
-            align-items: flex-end;
-        }
-        .kopf-feld {
-            flex: 1 1 120px;
-            min-width: 100px;
-        }
-        .kopf-feld label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            color: var(--text-light);
-            display: block;
-            margin-bottom: 2px;
-        }
-        .kopf-feld input {
-            width: 100%;
-            border: none;
-            border-bottom: 2px solid var(--border);
-            background: transparent;
-            font-size: 0.95rem;
-            padding: 8px 4px;
-            font-family: inherit;
-            color: var(--text);
-            min-height: var(--touch-target);
-        }
-        .kopf-feld input:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-            background: #fffef9;
-        }
-        .kopf-feld input[readonly] {
-            background: #f7f3ea;
-            color: #5a4a2e;
-            font-weight: 600;
-        }
-
-        /* Tabelle */
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin: 0 -4px;
-            padding-bottom: 8px;
-            touch-action: pan-x;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.75rem;
-            min-width: 800px;
-        }
-        thead th {
-            background: var(--accent-light);
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 8px 4px;
-            border: 1px solid #d9cba8;
-            text-align: center;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        thead th.col-notes { text-align: left; padding-left: 10px; }
-        tbody td {
-            border: 1px solid #e3d9c2;
-            padding: 4px 4px;
-            text-align: center;
-            vertical-align: middle;
-            position: relative;
-        }
-        tbody tr:active { background: #fdf9f0; }
-        tbody td input,
-        tbody td select {
-            width: 100%;
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            font-size: 0.75rem;
-            text-align: center;
-            padding: 6px 2px;
-            color: var(--text);
-            border-radius: 4px;
-            min-height: 32px;
-        }
-        tbody td input:focus,
-        tbody td select:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: -1px;
-            background: #fffefb;
-        }
-        .notes-input {
-            text-align: left !important;
-            padding-right: 32px !important;
-        }
-        .note-expand {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--accent);
-            z-index: 2;
-            padding: 4px;
-            min-width: 36px;
-            min-height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .row-num {
-            font-size: 0.7rem;
-            color: #b5a585;
-            min-width: 26px;
-        }
-
-        /* Legende */
-        .legende {
-            margin-top: 16px;
-            padding: 12px;
-            background: #fdfaf3;
-            border: 1px solid #e3d9c2;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 20px;
-            color: var(--text-light);
-        }
-        .legende strong { font-size: 0.65rem; display: block; margin-bottom: 2px; color: var(--accent); }
-        .legende .val { font-weight: 700; width: 16px; display: inline-block; color: var(--accent); }
-
-        /* Modal (angepasst für Touch) */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.25s;
-            padding: 16px;
-        }
-        .modal-overlay.active { visibility: visible; opacity: 1; }
-        .modal-box {
-            background: #fffef9;
-            border-radius: 20px;
-            padding: 24px 20px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        }
-        .modal-box h3 { margin-bottom: 12px; color: var(--accent); }
-        .modal-box textarea {
-            width: 100%;
-            height: 180px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            resize: vertical;
-            background: #fffefb;
-            margin-bottom: 16px;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-        .modal-actions button {
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: 1.5px solid var(--border);
-            background: #fffef9;
-            font-weight: 600;
-            font-size: 1rem;
-            min-height: var(--touch-target);
-        }
-        .modal-actions button.primary {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(120px);
-            background: #3e3729;
-            color: #faf8f2;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            z-index: 3000;
-            transition: 0.3s;
-            pointer-events: none;
-            font-size: 0.9rem;
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); }
-
-        @media (max-width: 768px) {
-            body { padding: 8px 8px 100px; }
-            .top-nav { flex-direction: column; align-items: stretch; gap: 10px; }
-            .nav-group { justify-content: space-between; }
-            .toolbar { gap: 6px; padding: 10px; }
-            .toolbar .btn { padding: 10px 14px; font-size: 0.78rem; }
-            .stockkarte { padding: 14px 10px; }
-            .stand-titel { font-size: 1.2rem; }
-            .kopf-feld input { font-size: 0.9rem; padding: 8px 2px; }
-            table { font-size: 0.7rem; min-width: 700px; }
-            .legende { font-size: 0.65rem; }
-        }
-
-        @media (max-width: 480px) {
-            .top-nav { padding: 8px 10px; }
-            select, .btn { font-size: 0.8rem; padding: 8px 12px; }
-            .btn { padding: 8px 12px; }
-            .table-wrapper { margin: 0 -6px; }
-            .modal-box { padding: 16px; }
-        }
-
-        @media print {
-            body { background: white; padding: 0; }
-            .top-nav, .toolbar, .toast, .note-expand, .modal-overlay { display: none !important; }
-            .stockkarte { box-shadow: none; border: 2px solid black; border-radius: 0; padding: 8px; }
-            @page { size: A4 landscape; margin: 8mm; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Navigation -->
-    <div class="top-nav">
-        <div class="nav-group">
-            <label for="jahrSelect">📅 Jahr</label>
-            <select id="jahrSelect"></select>
-            <button id="btnNeuesJahr" class="btn btn-primary">＋ Jahr</button>
-        </div>
-        <div class="nav-group">
-            <label for="volkSelect">🐝 Volk</label>
-            <select id="volkSelect"></select>
-            <button id="btnNeuesVolk" class="btn btn-primary">＋ Volk</button>
-            <button id="btnVolkLoeschen" class="btn">🗑️</button>
-        </div>
-    </div>
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <button onclick="window.print()" class="btn">🖨️</button>
-        <button id="btnPDF" class="btn btn-primary">📄 PDF</button>
-        <button id="btnJSONexport" class="btn">💾 Sicherung</button>
-        <label class="btn" style="cursor:pointer;">📂 Laden
-            <input type="file" id="jsonImport" accept=".json">
-        </label>
-        <button id="btnResetVolk" class="btn">🧹 Leeren</button>
-    </div>
-
-    <!-- Stockkarte -->
-    <div class="stockkarte" id="stockkarte">
-        <div class="stand-zeile">
-            <div class="stand-titel">Stockkarte</div>
-            <div class="stand-name">Bienen am Goldloch</div>
-            <div class="stand-jahr" id="jahrAnzeige">2026</div>
-        </div>
-        <div class="kopf">
-            <div class="kopf-feld"><label>Volk Nr.</label><input type="text" id="volkNr" readonly></div>
-            <div class="kopf-feld"><label>Herkunft</label><input type="text" id="herkunft" placeholder="Ableger …"></div>
-            <div class="kopf-feld"><label>Kö (Königin)</label><input type="text" id="koenigin" placeholder="Zeichnung"></div>
-            <div class="kopf-feld"><label>Farbe / Nr.</label><input type="text" id="farbeNr" placeholder="z.B. gelb"></div>
-        </div>
-
-        <div class="table-wrapper">
-            <table id="stockkarteTabelle">
-                <thead>
-                    <tr><th>Nr.</th><th>Datum</th><th>Stifte</th><th>Stärke</th><th colspan="3">Allgemein</th><th>Termin</th><th class="col-notes">Arbeiten & Notizen</th></tr>
-                    <tr><th></th><th></th><th></th><th></th><th>Sanftmut</th><th>Wabensitz</th><th>Schw.stimm.</th><th></th><th class="col-notes"></th></tr>
-                </thead>
-                <tbody id="tabellenBody"></tbody>
-            </table>
-        </div>
-
-        <div class="legende">
-            <div><strong>Sanftmut</strong> <span class="val">4</span> sehr sanft <span class="val">3</span> sanft <span class="val">2</span> sticht <span class="val">1</span> sehr böse</div>
-            <div><strong>Wabensitz</strong> <span class="val">4</span> sehr ruhig <span class="val">3</span> ruhig <span class="val">2</span> läuft <span class="val">1</span> stark</div>
-            <div><strong>Schwarmstimmung</strong> <span class="val">4</span> keine <span class="val">3</span> WZ <span class="val">2</span> Eingriff <span class="val">1</span> geschwärmt</div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal-overlay" id="noteModal">
-        <div class="modal-box">
-            <h3>📝 Notiz bearbeiten</h3>
-            <textarea id="modalTextarea"></textarea>
-            <div class="modal-actions">
-                <button id="modalCancel">Abbrechen</button>
-                <button id="modalSave" class="primary">Übernehmen</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast"></div>
-
-    <script>
-        // ─── Service Worker Registrierung ───
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registriert', reg.scope))
-                    .catch(err => console.log('Service Worker Fehler', err));
-            });
-        }
-
-        // ─── App-Logik ───
-        (() => {
-            const TABELLEN_ZEILEN = 35;
-            const STORAGE_KEY = 'stockkarte_bienen_goldloch_jahre';
-            const DEFAULT_JAHR = '2026';
-
-            // DOM
-            const jahrSelect = document.getElementById('jahrSelect');
-            const volkSelect = document.getElementById('volkSelect');
-            const tbody = document.getElementById('tabellenBody');
-            const toastEl = document.getElementById('toast');
-            const jahrAnzeige = document.getElementById('jahrAnzeige');
-            const volkNrInput = document.getElementById('volkNr');
-            const herkunftInput = document.getElementById('herkunft');
-            const koeniginInput = document.getElementById('koenigin');
-            const farbeNrInput = document.getElementById('farbeNr');
-            const modalOverlay = document.getElementById('noteModal');
-            const modalTextarea = document.getElementById('modalTextarea');
-            const modalCancel = document.getElementById('modalCancel');
-            const modalSave = document.getElementById('modalSave');
-            let currentTargetInput = null;
-
-            let alleDaten = { jahre: {} };
-            let aktuellesJahr = DEFAULT_JAHR;
-            let aktuellesVolkId = null;
-
-            function toast(msg, dauer = 2200) {
-                toastEl.textContent = msg;
-                toastEl.classList.add('show');
-                clearTimeout(window._toastTimer);
-                window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), dauer);
-            }
-
-            function leeresVolk(id) {
-                return { kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' }, zeilen: [] };
-            }
-
-            function getJahresDaten(jahr) {
-                if (!alleDaten.jahre[jahr]) alleDaten.jahre[jahr] = { völker: {} };
-                return alleDaten.jahre[jahr];
-            }
-
-            function baueTabellenGerüst() {
-                tbody.innerHTML = '';
-                for (let i = 1; i <= TABELLEN_ZEILEN; i++) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="row-num">${i}</td>
-                        <td><input type="text" data-feld="datum" data-zeile="${i}" placeholder="TT.MM."></td>
-                        <td><input type="text" data-feld="stifte" data-zeile="${i}" placeholder="++"></td>
-                        <td><input type="text" data-feld="staerke" data-zeile="${i}" placeholder="1-10"></td>
-                        <td><select data-feld="sanftmut" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
-                        <td><select data-feld="wabensitz" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
-                        <td><select data-feld="schwarmstimmung" data-zeile="${i}"><option value="">–</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td>
-                        <td><input type="text" data-feld="termin" data-zeile="${i}" placeholder="TT.MM."></td>
-                        <td style="position:relative;">
-                            <input type="text" class="notes-input" data-feld="notizen" data-zeile="${i}" placeholder="Notiz">
-                            <span class="note-expand">🔎</span>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            }
-
-            function speichereAktuellesVolk() {
-                if (!aktuellesVolkId || !aktuellesJahr) return;
-                const jDaten = getJahresDaten(aktuellesJahr);
-                const kopf = {
-                    volkNr: volkNrInput.value.trim(),
-                    herkunft: herkunftInput.value.trim(),
-                    koenigin: koeniginInput.value.trim(),
-                    farbeNr: farbeNrInput.value.trim()
-                };
-                const zeilen = [];
-                tbody.querySelectorAll('tr').forEach(row => {
-                    const z = {};
-                    let hatInhalt = false;
-                    row.querySelectorAll('input, select').forEach(el => {
-                        const feld = el.dataset.feld;
-                        if (feld) {
-                            const val = el.value.trim();
-                            z[feld] = val;
-                            if (val) hatInhalt = true;
-                        }
-                    });
-                    if (hatInhalt) {
-                        z.zeilenNr = row.querySelector('.row-num')?.textContent || '';
-                        zeilen.push(z);
-                    }
-                });
-                jDaten.völker[aktuellesVolkId] = { kopf, zeilen };
-            }
-
-            function ladeVolkInFormular(volkId) {
-                const jDaten = getJahresDaten(aktuellesJahr);
-                const volk = jDaten.völker[volkId] || leeresVolk(volkId);
-                volkNrInput.value = volk.kopf.volkNr || volkId;
-                herkunftInput.value = volk.kopf.herkunft || '';
-                koeniginInput.value = volk.kopf.koenigin || '';
-                farbeNrInput.value = volk.kopf.farbeNr || '';
-
-                tbody.querySelectorAll('input, select').forEach(el => el.value = '');
-
-                if (volk.zeilen) {
-                    const map = {};
-                    volk.zeilen.forEach(z => { if (z.zeilenNr) map[z.zeilenNr] = z; });
-                    tbody.querySelectorAll('tr').forEach(row => {
-                        const nr = row.querySelector('.row-num')?.textContent || '';
-                        const z = map[nr];
-                        if (z) {
-                            row.querySelectorAll('input, select').forEach(el => {
-                                const feld = el.dataset.feld;
-                                if (feld && z[feld] !== undefined) el.value = z[feld];
-                            });
-                        }
-                    });
-                }
-            }
-
-            function updateJahrSelect() {
-                const jahre = Object.keys(alleDaten.jahre).sort();
-                if (jahre.length === 0) {
-                    alleDaten.jahre[DEFAULT_JAHR] = { völker: { '1': leeresVolk('1') } };
-                    jahre.push(DEFAULT_JAHR);
-                }
-                jahrSelect.innerHTML = '';
-                jahre.forEach(j => {
-                    const o = new Option(j, j);
-                    jahrSelect.appendChild(o);
-                });
-                if (!alleDaten.jahre[aktuellesJahr]) aktuellesJahr = jahre[0];
-                jahrSelect.value = aktuellesJahr;
-                jahrAnzeige.textContent = aktuellesJahr;
-            }
-
-            function updateVolkSelect() {
-                const jDaten = getJahresDaten(aktuellesJahr);
-                const ids = Object.keys(jDaten.völker).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
-                if (ids.length === 0) {
-                    jDaten.völker['1'] = leeresVolk('1');
-                    ids.push('1');
-                }
-                volkSelect.innerHTML = '';
-                ids.forEach(id => volkSelect.appendChild(new Option(`Volk ${id}`, id)));
-                if (!aktuellesVolkId || !jDaten.völker[aktuellesVolkId]) aktuellesVolkId = ids[0];
-                volkSelect.value = aktuellesVolkId;
-            }
-
-            function wechsleJahr(neuesJahr) {
-                if (!neuesJahr || neuesJahr === aktuellesJahr) return;
-                speichereAktuellesVolk();
-                aktuellesJahr = neuesJahr;
-                updateVolkSelect();
-                ladeVolkInFormular(aktuellesVolkId);
-                jahrSelect.value = aktuellesJahr;
-                jahrAnzeige.textContent = aktuellesJahr;
-                autoSpeichern();
-            }
-
-            function neuesJahr() {
-                const jahr = prompt('Neues Jahr (z.B. 2027):', '');
-                if (!jahr || alleDaten.jahre[jahr]) { toast('Ungültig oder bereits vorhanden.'); return; }
-                speichereAktuellesVolk();
-                const jAlt = getJahresDaten(aktuellesJahr);
-                alleDaten.jahre[jahr] = { völker: {} };
-                Object.keys(jAlt.völker).forEach(id => {
-                    alleDaten.jahre[jahr].völker[id] = {
-                        kopf: { ...jAlt.völker[id].kopf, volkNr: id },
-                        zeilen: []
-                    };
-                });
-                if (Object.keys(alleDaten.jahre[jahr].völker).length === 0) {
-                    alleDaten.jahre[jahr].völker['1'] = leeresVolk('1');
-                }
-                updateJahrSelect();
-                wechsleJahr(jahr);
-                toast(`✅ Jahr ${jahr} angelegt`);
-            }
-
-            function wechsleVolk(neueId) {
-                if (!neueId || !getJahresDaten(aktuellesJahr).völker[neueId]) return;
-                speichereAktuellesVolk();
-                aktuellesVolkId = neueId;
-                ladeVolkInFormular(neueId);
-                volkSelect.value = neueId;
-                autoSpeichern();
-            }
-
-            function neuesVolk() {
-                const id = prompt('Volk-Nummer:', '');
-                if (!id) return;
-                const jDaten = getJahresDaten(aktuellesJahr);
-                if (jDaten.völker[id]) { toast('Volk existiert schon.'); return; }
-                speichereAktuellesVolk();
-                jDaten.völker[id] = leeresVolk(id);
-                updateVolkSelect();
-                wechsleVolk(id);
-                toast(`✅ Volk ${id} erstellt`);
-            }
-
-            function loescheVolk() {
-                const jDaten = getJahresDaten(aktuellesJahr);
-                if (Object.keys(jDaten.völker).length <= 1) { toast('Mindestens ein Volk nötig.'); return; }
-                if (!confirm(`Volk ${aktuellesVolkId} aus ${aktuellesJahr} löschen?`)) return;
-                delete jDaten.völker[aktuellesVolkId];
-                updateVolkSelect();
-                aktuellesVolkId = Object.keys(jDaten.völker)[0];
-                ladeVolkInFormular(aktuellesVolkId);
-                autoSpeichern();
-            }
-
-            function autoSpeichern() {
-                speichereAktuellesVolk();
-                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(alleDaten)); } catch (e) {}
-            }
-
-            function datenLaden() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    if (raw) {
-                        const parsed = JSON.parse(raw);
-                        if (parsed.jahre) alleDaten = parsed;
-                        else if (parsed.völker) alleDaten = { jahre: { [DEFAULT_JAHR]: { völker: parsed.völker } } };
-                    }
-                } catch (e) {}
-                if (!alleDaten.jahre || Object.keys(alleDaten.jahre).length === 0) {
-                    alleDaten.jahre = { [DEFAULT_JAHR]: { völker: { '1': leeresVolk('1') } } };
-                }
-                updateJahrSelect();
-                aktuellesJahr = jahrSelect.value;
-                updateVolkSelect();
-                ladeVolkInFormular(aktuellesVolkId);
-            }
-
-            function exportiereJSON() {
-                speichereAktuellesVolk();
-                const blob = new Blob([JSON.stringify(alleDaten, null, 2)], {type: 'application/json'});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `Stockkarte_alle_Jahre_${new Date().toISOString().slice(0,10)}.json`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                toast('💾 Alle Jahre exportiert');
-            }
-
-            function importiereJSON(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    try {
-                        const daten = JSON.parse(e.target.result);
-                        if (!daten.jahre) throw new Error('Ungültig');
-                        alleDaten = daten;
-                        updateJahrSelect();
-                        aktuellesJahr = jahrSelect.value;
-                        updateVolkSelect();
-                        ladeVolkInFormular(aktuellesVolkId);
-                        autoSpeichern();
-                        toast('📥 Daten geladen');
-                    } catch { toast('❌ Fehler'); }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            }
-
-            function exportierePDF() {
-                speichereAktuellesVolk();
-                toast('📄 PDF wird erstellt…', 2000);
-                html2pdf().set({
-                    margin: [6,4,6,4],
-                    filename: `Stockkarte_${aktuellesJahr}_Volk_${aktuellesVolkId}.pdf`,
-                    image: { type: 'jpeg', quality: 0.95 },
-                    html2canvas: { scale: 2, backgroundColor: '#fffef9' },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak: { mode: ['avoid-all', 'css'] }
-                }).from(document.getElementById('stockkarte')).save();
-            }
-
-            function resetTabelle() {
-                if (!confirm('Tabelle dieses Volks leeren?')) return;
-                const jDaten = getJahresDaten(aktuellesJahr);
-                if (jDaten.völker[aktuellesVolkId]) {
-                    jDaten.völker[aktuellesVolkId].zeilen = [];
-                    ladeVolkInFormular(aktuellesVolkId);
-                    autoSpeichern();
-                }
-            }
-
-            function openModal(input) {
-                currentTargetInput = input;
-                modalTextarea.value = input.value;
-                modalOverlay.classList.add('active');
-                modalTextarea.focus();
-            }
-            function closeModal(save) {
-                if (save && currentTargetInput) {
-                    currentTargetInput.value = modalTextarea.value;
-                    autoSpeichern();
-                }
-                modalOverlay.classList.remove('active');
-                currentTargetInput = null;
-            }
-
-            // Event Listener
-            jahrSelect.addEventListener('change', () => wechsleJahr(jahrSelect.value));
-            document.getElementById('btnNeuesJahr').addEventListener('click', neuesJahr);
-            volkSelect.addEventListener('change', () => wechsleVolk(volkSelect.value));
-            document.getElementById('btnNeuesVolk').addEventListener('click', neuesVolk);
-            document.getElementById('btnVolkLoeschen').addEventListener('click', loescheVolk);
-            document.getElementById('btnJSONexport').addEventListener('click', exportiereJSON);
-            document.getElementById('jsonImport').addEventListener('change', importiereJSON);
-            document.getElementById('btnPDF').addEventListener('click', exportierePDF);
-            document.getElementById('btnResetVolk').addEventListener('click', resetTabelle);
-
-            tbody.addEventListener('input', autoSpeichern);
-            tbody.addEventListener('change', autoSpeichern);
-            [volkNrInput, herkunftInput, koeniginInput, farbeNrInput].forEach(el => el.addEventListener('input', autoSpeichern));
-
-            tbody.addEventListener('click', e => {
-                if (e.target.classList.contains('note-expand')) {
-                    const td = e.target.closest('td');
-                    if (td) {
-                        const inp = td.querySelector('input.notes-input');
-                        if (inp) openModal(inp);
-                    }
-                }
-            });
-            modalCancel.addEventListener('click', () => closeModal(false));
-            modalSave.addEventListener('click', () => closeModal(true));
-            modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(false); });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal(false); });
-
-            // Start
-            baueTabellenGerüst();
-            datenLaden();
-            jahrAnzeige.textContent = aktuellesJahr;
         })();
     </script>
 </body>
