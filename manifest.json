@@ -7,7 +7,7 @@
   "theme_color": "#8b6f3c",
   "icons": [
     {
-      "src": "https://tbmbuero.github.io/Stockkarte/icon.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
