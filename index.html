@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Stockkarte Bienen am Goldloch</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -101,7 +102,6 @@
             border-bottom: 1px dashed #c9b99a;
             flex-wrap: wrap;
         }
-        .stand-icon { width: 40px; height: 40px; }
         .stand-text { text-align: center; }
         .stand-titel { font-size: 1.3rem; font-weight: 700; color: #8b6f3c; }
         .stand-name { font-size: 1rem; font-weight: 600; color: #5a3e1b; }
@@ -166,7 +166,7 @@
         .toast.show { transform: translateX(-50%) translateY(0); }
         @media print {
             body { background: white; padding: 0; }
-            .nav-bar, .toolbar, .toast, .modal, .note-btn, .stand-icon { display: none !important; }
+            .nav-bar, .toolbar, .toast, .modal, .note-btn { display: none !important; }
             .stockkarte { box-shadow: none; border: 1.5px solid black; border-radius: 0; }
             @page { size: A4 landscape; margin: 5mm; }
             table { font-size: 0.6rem; }
@@ -177,7 +177,6 @@
 </head>
 <body>
 
-    <!-- Navigation -->
     <div class="nav-bar">
         <div class="nav-group">
             <label>📅 Jahr</label>
@@ -192,7 +191,6 @@
         </div>
     </div>
 
-    <!-- Toolbar -->
     <div class="toolbar">
         <button class="btn" onclick="window.print()">🖨️ Drucken</button>
         <button class="btn btn-primary" id="btnPDF">📄 PDF</button>
@@ -203,10 +201,8 @@
         <button class="btn" id="btnReset">🧹 Leeren</button>
     </div>
 
-    <!-- Stockkarte -->
     <div class="stockkarte" id="stockkarte">
         <div class="stand-zeile">
-            <img src="icon.png" alt="Bienen-Icon" class="stand-icon">
             <div class="stand-text">
                 <div class="stand-titel">Stockkarte</div>
                 <div class="stand-name">Bienen am Goldloch</div>
@@ -238,7 +234,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal" id="noteModal">
         <div class="modal-content">
             <h3>📝 Notiz bearbeiten</h3>
@@ -252,19 +247,15 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // ===== HAUPTLOGIK (unverändert stabil) =====
         (function() {
             const TABELLEN_ZEILEN = 35;
             const STORAGE_KEY = 'stockkarte_goldloch';
             const DEFAULT_JAHR = '2026';
-
             const $ = (id) => document.getElementById(id);
-
             let alleDaten = { jahre: {} };
             let aktuellesJahr = DEFAULT_JAHR;
             let aktuellesVolkId = '1';
             let currentNoteInput = null;
-
             let toastTimer;
             function toast(msg, dauer = 2000) {
                 const el = $('toast');
@@ -273,16 +264,13 @@
                 clearTimeout(toastTimer);
                 toastTimer = setTimeout(() => el.classList.remove('show'), dauer);
             }
-
             function leeresVolk(id) {
                 return { kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' }, zeilen: [] };
             }
-
             function getJahr(jahr) {
                 if (!alleDaten.jahre[jahr]) alleDaten.jahre[jahr] = { völker: {} };
                 return alleDaten.jahre[jahr];
             }
-
             function baueTabelle() {
                 const tbody = $('tabellenBody');
                 tbody.innerHTML = '';
@@ -305,7 +293,6 @@
                     tbody.appendChild(tr);
                 }
             }
-
             function speichern() {
                 const jDaten = getJahr(aktuellesJahr);
                 const kopf = {
@@ -327,7 +314,6 @@
                 jDaten.völker[aktuellesVolkId] = { kopf, zeilen };
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(alleDaten)); } catch(e) {}
             }
-
             function laden() {
                 const jDaten = getJahr(aktuellesJahr);
                 const volk = jDaten.völker[aktuellesVolkId] || leeresVolk(aktuellesVolkId);
@@ -349,7 +335,6 @@
                     });
                 }
             }
-
             function updateJahrSelect() {
                 const jahre = Object.keys(alleDaten.jahre).sort();
                 if (jahre.length === 0) {
@@ -363,7 +348,6 @@
                 sel.value = aktuellesJahr;
                 $('jahrAnzeige').textContent = aktuellesJahr;
             }
-
             function updateVolkSelect() {
                 const jDaten = getJahr(aktuellesJahr);
                 const ids = Object.keys(jDaten.völker).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
@@ -374,7 +358,6 @@
                 if (!aktuellesVolkId || !jDaten.völker[aktuellesVolkId]) aktuellesVolkId = ids[0];
                 sel.value = aktuellesVolkId;
             }
-
             function wechsleJahr(j) {
                 if (!j || j === aktuellesJahr) return;
                 speichern();
@@ -384,7 +367,6 @@
                 $('jahrSelect').value = aktuellesJahr;
                 $('jahrAnzeige').textContent = aktuellesJahr;
             }
-
             function wechsleVolk(id) {
                 if (!id || id === aktuellesVolkId) return;
                 speichern();
@@ -392,7 +374,6 @@
                 laden();
                 $('volkSelect').value = id;
             }
-
             function neuesJahr() {
                 const jahr = prompt('Neues Jahr (z.B. 2027):', '');
                 if (!jahr || alleDaten.jahre[jahr]) { toast('Ungültig oder bereits vorhanden'); return; }
@@ -407,7 +388,6 @@
                 wechsleJahr(jahr);
                 toast('✅ Jahr ' + jahr + ' angelegt');
             }
-
             function neuesVolk() {
                 const id = prompt('Volk-Nummer:', '');
                 if (!id) return;
@@ -419,7 +399,6 @@
                 wechsleVolk(id);
                 toast('✅ Volk ' + id + ' erstellt');
             }
-
             function loescheVolk() {
                 const jDaten = getJahr(aktuellesJahr);
                 if (Object.keys(jDaten.völker).length <= 1) { toast('Mindestens 1 Volk nötig'); return; }
@@ -432,7 +411,6 @@
                 speichern();
                 toast('Volk gelöscht');
             }
-
             function exportJSON() {
                 speichern();
                 const blob = new Blob([JSON.stringify(alleDaten, null, 2)], {type: 'application/json'});
@@ -442,7 +420,6 @@
                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 toast('💾 Exportiert');
             }
-
             function importJSON(e) {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -463,28 +440,23 @@
                 reader.readAsText(file);
                 e.target.value = '';
             }
-
             function openModal(input) {
                 currentNoteInput = input;
                 $('modalTextarea').value = input.value;
                 $('noteModal').classList.add('active');
                 $('modalTextarea').focus();
             }
-
             function closeModal(save) {
                 if (save && currentNoteInput) { currentNoteInput.value = $('modalTextarea').value; speichern(); }
                 $('noteModal').classList.remove('active');
                 currentNoteInput = null;
             }
-
             function exportPDF() { speichern(); toast('📄 PDF wird erstellt…', 2000); window.print(); }
-
             function resetTabelle() {
                 if (!confirm('Tabelle dieses Volks leeren?')) return;
                 getJahr(aktuellesJahr).völker[aktuellesVolkId].zeilen = [];
                 laden(); speichern(); toast('🧹 Tabelle geleert');
             }
-
             function datenLaden() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
@@ -503,7 +475,6 @@
                 aktuellesVolkId = $('volkSelect').value;
                 laden();
             }
-
             $('jahrSelect').addEventListener('change', function() { wechsleJahr(this.value); });
             $('volkSelect').addEventListener('change', function() { wechsleVolk(this.value); });
             $('btnNeuesJahr').addEventListener('click', neuesJahr);
@@ -516,7 +487,6 @@
             $('modalCancel').addEventListener('click', function() { closeModal(false); });
             $('modalSave').addEventListener('click', function() { closeModal(true); });
             $('noteModal').addEventListener('click', function(e) { if (e.target === this) closeModal(false); });
-
             document.addEventListener('input', function(e) {
                 if (e.target.closest('#tabellenBody') || e.target.closest('.kopf')) {
                     clearTimeout(window._saveTimer);
@@ -536,11 +506,9 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && $('noteModal').classList.contains('active')) closeModal(false);
             });
-
             baueTabelle();
             datenLaden();
             $('jahrAnzeige').textContent = aktuellesJahr;
-            console.log('🐝 Stockkarte bereit – Icon sichtbar!');
         })();
     </script>
 </body>
