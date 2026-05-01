@@ -10,18 +10,8 @@
     <title>Stockkarte Bienen am Goldloch</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         body {
             background: #faf8f2;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -32,8 +22,6 @@
             -webkit-tap-highlight-color: transparent;
             font-size: 14px;
         }
-
-        /* Navigation */
         .nav-bar {
             background: #fffef9;
             border: 1px solid #c9b99a;
@@ -46,17 +34,8 @@
             align-items: center;
             justify-content: center;
         }
-        .nav-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .nav-group label {
-            font-weight: 700;
-            color: #8b6f3c;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
+        .nav-group { display: flex; align-items: center; gap: 6px; }
+        .nav-group label { font-weight: 700; color: #8b6f3c; font-size: 0.85rem; white-space: nowrap; }
         select {
             padding: 8px 28px 8px 10px;
             border-radius: 20px;
@@ -88,17 +67,8 @@
             gap: 4px;
             transition: 0.15s;
         }
-        .btn:active {
-            background: #e2d7bb;
-            transform: scale(0.97);
-        }
-        .btn-primary {
-            background: #8b6f3c;
-            color: white;
-            border-color: #8b6f3c;
-        }
-
-        /* Toolbar */
+        .btn:active { background: #e2d7bb; transform: scale(0.97); }
+        .btn-primary { background: #8b6f3c; color: white; border-color: #8b6f3c; }
         .toolbar {
             background: #fffef9;
             border: 1px solid #c9b99a;
@@ -111,16 +81,8 @@
             align-items: center;
             justify-content: center;
         }
-        .toolbar .btn {
-            font-size: 0.8rem;
-            padding: 6px 12px;
-            min-height: 36px;
-        }
-        .toolbar input[type="file"] {
-            display: none;
-        }
-
-        /* Stockkarte */
+        .toolbar .btn { font-size: 0.8rem; padding: 6px 12px; min-height: 36px; }
+        .toolbar input[type="file"] { display: none; }
         .stockkarte {
             background: #fffef9;
             border: 2px solid #c9b99a;
@@ -130,234 +92,81 @@
             overflow: visible;
         }
         .stand-zeile {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
             margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 1px dashed #c9b99a;
-        }
-        .stand-titel {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #8b6f3c;
-        }
-        .stand-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #5a3e1b;
-        }
-        .stand-jahr {
-            font-size: 0.9rem;
-            font-weight: 600;
-            background: #f0e8d5;
-            padding: 2px 12px;
-            border-radius: 14px;
-            color: #5a3e1b;
-            display: inline-block;
-            margin-top: 4px;
-        }
-
-        .kopf {
-            display: flex;
             flex-wrap: wrap;
-            gap: 8px 12px;
-            margin-bottom: 10px;
         }
-        .kopf-feld {
-            flex: 1 1 120px;
-            min-width: 100px;
-        }
-        .kopf-feld label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 700;
-            color: #6b5e48;
-            display: block;
-            margin-bottom: 2px;
-        }
+        .stand-icon { width: 40px; height: 40px; }
+        .stand-text { text-align: center; }
+        .stand-titel { font-size: 1.3rem; font-weight: 700; color: #8b6f3c; }
+        .stand-name { font-size: 1rem; font-weight: 600; color: #5a3e1b; }
+        .stand-jahr { font-size: 0.9rem; font-weight: 600; background: #f0e8d5; padding: 2px 12px; border-radius: 14px; color: #5a3e1b; display: inline-block; margin-top: 4px; }
+        .kopf { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 10px; }
+        .kopf-feld { flex: 1 1 120px; min-width: 100px; }
+        .kopf-feld label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: #6b5e48; display: block; margin-bottom: 2px; }
         .kopf-feld input {
-            width: 100%;
-            border: none;
-            border-bottom: 2px solid #c9b99a;
-            background: transparent;
-            font-size: 0.85rem;
-            padding: 6px 2px;
-            font-family: inherit;
-            color: #3e3729;
-            min-height: 36px;
+            width: 100%; border: none; border-bottom: 2px solid #c9b99a; background: transparent;
+            font-size: 0.85rem; padding: 6px 2px; font-family: inherit; color: #3e3729; min-height: 36px;
         }
-        .kopf-feld input:focus {
-            outline: none;
-            border-bottom-color: #8b6f3c;
-            background: #fffef9;
-        }
-        .kopf-feld input[readonly] {
-            background: #f7f3ea;
-            color: #5a4a2e;
-            font-weight: 600;
-        }
-
-        /* Tabelle - stabilisiert für WebView */
+        .kopf-feld input:focus { outline: none; border-bottom-color: #8b6f3c; background: #fffef9; }
+        .kopf-feld input[readonly] { background: #f7f3ea; color: #5a4a2e; font-weight: 600; }
         .table-container {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: visible;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 8px;
-            border: 1px solid #e3d9c2;
-            border-radius: 4px;
-            max-height: none;
+            width: 100%; overflow-x: auto; overflow-y: visible;
+            -webkit-overflow-scrolling: touch; margin-bottom: 8px;
+            border: 1px solid #e3d9c2; border-radius: 4px; max-height: none;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.72rem;
-            min-width: 700px;
-            table-layout: auto;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.72rem; min-width: 700px; table-layout: auto; }
         thead th {
-            background: #f0e8d5;
-            color: #8b6f3c;
-            font-weight: 700;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            padding: 6px 4px;
-            border: 1px solid #d9cba8;
-            text-align: center;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 2;
+            background: #f0e8d5; color: #8b6f3c; font-weight: 700; font-size: 0.65rem;
+            text-transform: uppercase; letter-spacing: 0.4px; padding: 6px 4px;
+            border: 1px solid #d9cba8; text-align: center; white-space: nowrap;
+            position: sticky; top: 0; z-index: 2;
         }
-        tbody td {
-            border: 1px solid #e3d9c2;
-            padding: 3px 4px;
-            text-align: center;
-            vertical-align: middle;
+        tbody td { border: 1px solid #e3d9c2; padding: 3px 4px; text-align: center; vertical-align: middle; }
+        tbody tr:nth-child(even) { background: #fdfaf3; }
+        tbody td input, tbody td select {
+            width: 100%; border: none; background: transparent; font-family: inherit;
+            font-size: 0.7rem; text-align: center; padding: 4px 2px; color: #3e3729;
+            border-radius: 3px; min-height: 28px;
         }
-        tbody tr:nth-child(even) {
-            background: #fdfaf3;
-        }
-        tbody td input,
-        tbody td select {
-            width: 100%;
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 4px 2px;
-            color: #3e3729;
-            border-radius: 3px;
-            min-height: 28px;
-        }
-        tbody td input:focus,
-        tbody td select:focus {
-            outline: 1.5px solid #8b6f3c;
-            outline-offset: -1px;
-            background: #fffefb;
-        }
-        .notes-input {
-            text-align: left !important;
-        }
-        .row-num {
-            font-size: 0.65rem;
-            color: #b5a585;
-            min-width: 24px;
-        }
-        .note-btn {
-            display: inline-block;
-            margin-left: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            vertical-align: middle;
-        }
-
+        tbody td input:focus, tbody td select:focus { outline: 1.5px solid #8b6f3c; outline-offset: -1px; background: #fffefb; }
+        .notes-input { text-align: left !important; }
+        .row-num { font-size: 0.65rem; color: #b5a585; min-width: 24px; }
+        .note-btn { display: inline-block; margin-left: 4px; cursor: pointer; font-size: 1rem; vertical-align: middle; }
         .legende {
-            margin-top: 8px;
-            padding: 8px 10px;
-            background: #fdfaf3;
-            border: 1px solid #e3d9c2;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 14px;
-            color: #6b5e48;
+            margin-top: 8px; padding: 8px 10px; background: #fdfaf3; border: 1px solid #e3d9c2;
+            border-radius: 6px; font-size: 0.65rem; display: flex; flex-wrap: wrap; gap: 6px 14px; color: #6b5e48;
         }
-        .legende strong {
-            font-size: 0.6rem;
-            display: block;
-            margin-bottom: 1px;
-            color: #8b6f3c;
-        }
-
-        /* Modal */
+        .legende strong { font-size: 0.6rem; display: block; margin-bottom: 1px; color: #8b6f3c; }
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 16px;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
         .modal-content {
-            background: #fffef9;
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 450px;
+            background: #fffef9; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .modal-content h3 {
-            margin-bottom: 10px;
-            color: #8b6f3c;
-        }
+        .modal-content h3 { margin-bottom: 10px; color: #8b6f3c; }
         .modal-content textarea {
-            width: 100%;
-            height: 150px;
-            border: 2px solid #c9b99a;
-            border-radius: 10px;
-            padding: 10px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            resize: vertical;
-            margin-bottom: 12px;
+            width: 100%; height: 150px; border: 2px solid #c9b99a; border-radius: 10px;
+            padding: 10px; font-family: inherit; font-size: 0.95rem; resize: vertical; margin-bottom: 12px;
         }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
         .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(120px);
-            background: #3e3729;
-            color: #faf8f2;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            z-index: 2000;
-            transition: 0.3s ease;
-            pointer-events: none;
-            font-size: 0.85rem;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(120px);
+            background: #3e3729; color: #faf8f2; padding: 12px 24px; border-radius: 25px;
+            font-weight: 600; z-index: 2000; transition: 0.3s ease; pointer-events: none; font-size: 0.85rem;
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
+        .toast.show { transform: translateX(-50%) translateY(0); }
         @media print {
             body { background: white; padding: 0; }
-            .nav-bar, .toolbar, .toast, .modal, .note-btn { display: none !important; }
+            .nav-bar, .toolbar, .toast, .modal, .note-btn, .stand-icon { display: none !important; }
             .stockkarte { box-shadow: none; border: 1.5px solid black; border-radius: 0; }
             @page { size: A4 landscape; margin: 5mm; }
             table { font-size: 0.6rem; }
@@ -397,9 +206,12 @@
     <!-- Stockkarte -->
     <div class="stockkarte" id="stockkarte">
         <div class="stand-zeile">
-            <div class="stand-titel">Stockkarte</div>
-            <div class="stand-name">Bienen am Goldloch</div>
-            <div class="stand-jahr" id="jahrAnzeige">2026</div>
+            <img src="icon.png" alt="Bienen-Icon" class="stand-icon">
+            <div class="stand-text">
+                <div class="stand-titel">Stockkarte</div>
+                <div class="stand-name">Bienen am Goldloch</div>
+                <div class="stand-jahr" id="jahrAnzeige">2026</div>
+            </div>
         </div>
         <div class="kopf">
             <div class="kopf-feld"><label>Volk Nr.</label><input type="text" id="volkNr" readonly></div>
@@ -440,7 +252,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // ===== STABILE APP-LOGIK =====
+        // ===== HAUPTLOGIK (unverändert stabil) =====
         (function() {
             const TABELLEN_ZEILEN = 35;
             const STORAGE_KEY = 'stockkarte_goldloch';
@@ -453,7 +265,6 @@
             let aktuellesVolkId = '1';
             let currentNoteInput = null;
 
-            // Toast
             let toastTimer;
             function toast(msg, dauer = 2000) {
                 const el = $('toast');
@@ -463,21 +274,15 @@
                 toastTimer = setTimeout(() => el.classList.remove('show'), dauer);
             }
 
-            // Leeres Volk
             function leeresVolk(id) {
-                return {
-                    kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' },
-                    zeilen: []
-                };
+                return { kopf: { volkNr: id, herkunft: '', koenigin: '', farbeNr: '' }, zeilen: [] };
             }
 
-            // Jahresdaten holen
             function getJahr(jahr) {
                 if (!alleDaten.jahre[jahr]) alleDaten.jahre[jahr] = { völker: {} };
                 return alleDaten.jahre[jahr];
             }
 
-            // Tabelle bauen
             function baueTabelle() {
                 const tbody = $('tabellenBody');
                 tbody.innerHTML = '';
@@ -501,7 +306,6 @@
                 }
             }
 
-            // Speichern
             function speichern() {
                 const jDaten = getJahr(aktuellesJahr);
                 const kopf = {
@@ -516,21 +320,14 @@
                     let hatInhalt = false;
                     row.querySelectorAll('input, select').forEach(el => {
                         const f = el.dataset.feld;
-                        if (f) {
-                            z[f] = el.value.trim();
-                            if (z[f]) hatInhalt = true;
-                        }
+                        if (f) { z[f] = el.value.trim(); if (z[f]) hatInhalt = true; }
                     });
-                    if (hatInhalt) {
-                        z.zeilenNr = row.querySelector('.row-num')?.textContent || '';
-                        zeilen.push(z);
-                    }
+                    if (hatInhalt) { z.zeilenNr = row.querySelector('.row-num')?.textContent || ''; zeilen.push(z); }
                 });
                 jDaten.völker[aktuellesVolkId] = { kopf, zeilen };
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(alleDaten)); } catch(e) {}
             }
 
-            // Laden
             function laden() {
                 const jDaten = getJahr(aktuellesJahr);
                 const volk = jDaten.völker[aktuellesVolkId] || leeresVolk(aktuellesVolkId);
@@ -538,28 +335,21 @@
                 $('herkunft').value = volk.kopf.herkunft || '';
                 $('koenigin').value = volk.kopf.koenigin || '';
                 $('farbeNr').value = volk.kopf.farbeNr || '';
-
-                // Alle Felder leeren
                 document.querySelectorAll('#tabellenBody input, #tabellenBody select').forEach(el => el.value = '');
-
-                // Zeilen füllen
                 if (volk.zeilen && volk.zeilen.length > 0) {
                     const map = {};
                     volk.zeilen.forEach(z => { if (z.zeilenNr) map[z.zeilenNr] = z; });
                     document.querySelectorAll('#tabellenBody tr').forEach(row => {
                         const nr = row.querySelector('.row-num')?.textContent || '';
                         const z = map[nr];
-                        if (z) {
-                            row.querySelectorAll('input, select').forEach(el => {
-                                const f = el.dataset.feld;
-                                if (f && z[f] !== undefined) el.value = z[f];
-                            });
-                        }
+                        if (z) row.querySelectorAll('input, select').forEach(el => {
+                            const f = el.dataset.feld;
+                            if (f && z[f] !== undefined) el.value = z[f];
+                        });
                     });
                 }
             }
 
-            // Jahr-Select aktualisieren
             function updateJahrSelect() {
                 const jahre = Object.keys(alleDaten.jahre).sort();
                 if (jahre.length === 0) {
@@ -574,14 +364,10 @@
                 $('jahrAnzeige').textContent = aktuellesJahr;
             }
 
-            // Volk-Select aktualisieren
             function updateVolkSelect() {
                 const jDaten = getJahr(aktuellesJahr);
                 const ids = Object.keys(jDaten.völker).sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
-                if (ids.length === 0) {
-                    jDaten.völker['1'] = leeresVolk('1');
-                    ids.push('1');
-                }
+                if (ids.length === 0) { jDaten.völker['1'] = leeresVolk('1'); ids.push('1'); }
                 const sel = $('volkSelect');
                 sel.innerHTML = '';
                 ids.forEach(id => sel.appendChild(new Option('Volk ' + id, id)));
@@ -589,7 +375,6 @@
                 sel.value = aktuellesVolkId;
             }
 
-            // Jahr wechseln
             function wechsleJahr(j) {
                 if (!j || j === aktuellesJahr) return;
                 speichern();
@@ -600,7 +385,6 @@
                 $('jahrAnzeige').textContent = aktuellesJahr;
             }
 
-            // Volk wechseln
             function wechsleVolk(id) {
                 if (!id || id === aktuellesVolkId) return;
                 speichern();
@@ -609,7 +393,6 @@
                 $('volkSelect').value = id;
             }
 
-            // Neues Jahr
             function neuesJahr() {
                 const jahr = prompt('Neues Jahr (z.B. 2027):', '');
                 if (!jahr || alleDaten.jahre[jahr]) { toast('Ungültig oder bereits vorhanden'); return; }
@@ -617,20 +400,14 @@
                 const jAlt = getJahr(aktuellesJahr);
                 alleDaten.jahre[jahr] = { völker: {} };
                 Object.keys(jAlt.völker).forEach(id => {
-                    alleDaten.jahre[jahr].völker[id] = {
-                        kopf: { ...jAlt.völker[id].kopf, volkNr: id },
-                        zeilen: []
-                    };
+                    alleDaten.jahre[jahr].völker[id] = { kopf: { ...jAlt.völker[id].kopf, volkNr: id }, zeilen: [] };
                 });
-                if (Object.keys(alleDaten.jahre[jahr].völker).length === 0) {
-                    alleDaten.jahre[jahr].völker['1'] = leeresVolk('1');
-                }
+                if (Object.keys(alleDaten.jahre[jahr].völker).length === 0) alleDaten.jahre[jahr].völker['1'] = leeresVolk('1');
                 updateJahrSelect();
                 wechsleJahr(jahr);
                 toast('✅ Jahr ' + jahr + ' angelegt');
             }
 
-            // Neues Volk
             function neuesVolk() {
                 const id = prompt('Volk-Nummer:', '');
                 if (!id) return;
@@ -643,7 +420,6 @@
                 toast('✅ Volk ' + id + ' erstellt');
             }
 
-            // Volk löschen
             function loescheVolk() {
                 const jDaten = getJahr(aktuellesJahr);
                 if (Object.keys(jDaten.völker).length <= 1) { toast('Mindestens 1 Volk nötig'); return; }
@@ -657,20 +433,16 @@
                 toast('Volk gelöscht');
             }
 
-            // JSON Export
             function exportJSON() {
                 speichern();
                 const blob = new Blob([JSON.stringify(alleDaten, null, 2)], {type: 'application/json'});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
                 a.download = 'Stockkarte_Backup_' + new Date().toISOString().slice(0,10) + '.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 toast('💾 Exportiert');
             }
 
-            // JSON Import
             function importJSON(e) {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -686,15 +458,12 @@
                         laden();
                         speichern();
                         toast('📥 Daten geladen');
-                    } catch(ex) {
-                        toast('❌ Fehler beim Laden');
-                    }
+                    } catch(ex) { toast('❌ Fehler beim Laden'); }
                 };
                 reader.readAsText(file);
                 e.target.value = '';
             }
 
-            // Modal öffnen
             function openModal(input) {
                 currentNoteInput = input;
                 $('modalTextarea').value = input.value;
@@ -702,34 +471,20 @@
                 $('modalTextarea').focus();
             }
 
-            // Modal schließen
             function closeModal(save) {
-                if (save && currentNoteInput) {
-                    currentNoteInput.value = $('modalTextarea').value;
-                    speichern();
-                }
+                if (save && currentNoteInput) { currentNoteInput.value = $('modalTextarea').value; speichern(); }
                 $('noteModal').classList.remove('active');
                 currentNoteInput = null;
             }
 
-            // PDF Export
-            function exportPDF() {
-                speichern();
-                toast('📄 PDF wird erstellt…', 2000);
-                // Einfache Druck-Lösung ohne externe Bibliothek
-                window.print();
-            }
+            function exportPDF() { speichern(); toast('📄 PDF wird erstellt…', 2000); window.print(); }
 
-            // Tabelle leeren
             function resetTabelle() {
                 if (!confirm('Tabelle dieses Volks leeren?')) return;
                 getJahr(aktuellesJahr).völker[aktuellesVolkId].zeilen = [];
-                laden();
-                speichern();
-                toast('🧹 Tabelle geleert');
+                laden(); speichern(); toast('🧹 Tabelle geleert');
             }
 
-            // Daten laden aus localStorage
             function datenLaden() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
@@ -749,7 +504,6 @@
                 laden();
             }
 
-            // Event Listener
             $('jahrSelect').addEventListener('change', function() { wechsleJahr(this.value); });
             $('volkSelect').addEventListener('change', function() { wechsleVolk(this.value); });
             $('btnNeuesJahr').addEventListener('click', neuesJahr);
@@ -761,11 +515,8 @@
             $('btnReset').addEventListener('click', resetTabelle);
             $('modalCancel').addEventListener('click', function() { closeModal(false); });
             $('modalSave').addEventListener('click', function() { closeModal(true); });
-            $('noteModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal(false);
-            });
+            $('noteModal').addEventListener('click', function(e) { if (e.target === this) closeModal(false); });
 
-            // Auto-Save
             document.addEventListener('input', function(e) {
                 if (e.target.closest('#tabellenBody') || e.target.closest('.kopf')) {
                     clearTimeout(window._saveTimer);
@@ -773,12 +524,8 @@
                 }
             });
             document.addEventListener('change', function(e) {
-                if (e.target.closest('#tabellenBody')) {
-                    speichern();
-                }
+                if (e.target.closest('#tabellenBody')) speichern();
             });
-
-            // Notiz-Button Klick
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('note-btn')) {
                     const zeile = e.target.dataset.zeile;
@@ -786,20 +533,14 @@
                     if (input) openModal(input);
                 }
             });
-
-            // ESC für Modal
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && $('noteModal').classList.contains('active')) {
-                    closeModal(false);
-                }
+                if (e.key === 'Escape' && $('noteModal').classList.contains('active')) closeModal(false);
             });
 
-            // === START ===
             baueTabelle();
             datenLaden();
             $('jahrAnzeige').textContent = aktuellesJahr;
-
-            console.log('🐝 Stockkarte bereit – stabil für Android WebView');
+            console.log('🐝 Stockkarte bereit – Icon sichtbar!');
         })();
     </script>
 </body>
